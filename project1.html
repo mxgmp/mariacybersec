@@ -1,60 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project 1: Detecting Brute Force Attacks with Splunk</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project 1 — Detecting Brute Force Attacks with Splunk</title>
   <style>
-    body {
-      background-color: #0d0d0d;
-      color: #e0e0e0;
-      font-family: 'Courier New', monospace;
-      line-height: 1.6;
-      margin: 2rem auto;
-      max-width: 850px;
-      padding: 0 1rem;
+    :root{
+      --bg:#0b0b0c;         /* near-black background */
+      --fg:#dcdcdc;         /* light gray text */
+      --muted:#a9a9a9;      /* secondary text */
+      --accent:#b8a1ff;     /* gentle purple */
     }
-    h1, h2 {
-      color: #b784f7;
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);}
+    body{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:15px;              /* smaller, not kiddie-large */
+      line-height:1.65;
+      -webkit-font-smoothing:antialiased;
+      max-width:880px;
+      padding:32px 18px 80px;
+      margin:0 auto;
     }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+    header{margin-bottom:18px;}
+    h1{
+      font-size:24px;
+      font-weight:700;
+      color:var(--accent);
+      margin:0 0 10px 0;
+      letter-spacing:.2px;
     }
-    h2 {
-      font-size: 1.3rem;
-      margin-top: 2rem;
+    .lede{color:var(--fg); margin:0 0 12px 0;}
+    p{margin:10px 0;}
+    h2{
+      font-size:16px;
+      color:var(--fg);
+      margin:26px 0 10px;
     }
-    strong {
-      color: #ffffff;
+    strong{color:#fff;}
+    u{text-decoration:underline;}
+    ul{margin:8px 0 14px 18px;}
+    li{margin:4px 0;}
+    .muted{color:var(--muted);}
+    a{color:var(--accent); text-decoration:none;}
+    a:hover{ text-decoration:underline; }
+    code{background:#131318; color:#eaeaea; padding:2px 5px; border-radius:4px;}
+    hr{
+      border:0; height:1px; background:#19191f; margin:28px 0;
     }
-    u {
-      text-decoration: underline;
-    }
-    ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    ul li::before {
-      content: "•";
-      color: #b784f7;
-      display: inline-block; 
-      width: 1em;
-      margin-left: -1em;
-    }
-    .conclusion {
-      margin-top: 2rem;
-      border-top: 1px solid #333;
-      padding-top: 1rem;
-    }
+    footer{margin-top:28px; color:var(--muted); font-size:13px;}
+    /* optional image styling (for later) */
+    .img{margin:12px 0; border-radius:8px; display:block; max-width:100%; height:auto;}
+    .small{font-size:13.5px;}
   </style>
 </head>
 <body>
-  <h1>Detecting Brute Force Attacks with Splunk</h1>
-
-  <p>Brute force attacks aren’t just random password guesses, they are high-volume authentication failures that leave a clear trail in system logs. In this project, I built a Splunk detection workflow to identify brute force activity, create automated alerts, and visualise the results in a dashboard.</p>
-
-  <p>This was my first hands-on Splunk project, and here’s how I did it step by step:</p>
+  <header>
+    <h1>Detecting Brute Force Attacks with Splunk</h1>
+    <p class="lede">Brute force attacks aren’t just random password guesses, they are high-volume authentication failures that leave a clear trail in system logs. In this project, I built a Splunk detection workflow to identify brute force activity, create automated alerts, and visualise the results in a dashboard.</p>
+    <p class="lede">This was my first hands-on Splunk project, and here’s how I did it step by step:</p>
+  </header>
 
   <h2>Step 1: Ingest Authentication Logs</h2>
   <p>Before we can detect anything, Splunk needs the right data, so I ingested Linux authentication logs (<code>linux_auth_demo</code>) into a dedicated index called “lab”.</p>
@@ -90,16 +94,18 @@
   <h2>Step 6: Reduce False Positives</h2>
   <p>Not every spike is malicious, which is why I filtered out service accounts and test environments to avoid false positives and keep the focus on real brute force attempts.</p>
 
-  <div class="conclusion">
-    <h2>Conclusion</h2>
-    <p>This project has given me me hands-on experience with Splunk search, alerting, and dashboarding. It has also taught me that brute force attacks are noisy, but without the right filtering, the alerts can drown analysts in false positives.</p>
-    <ul>
-      <li>Full SPL queries, alert configs, and screenshots are documented in this post.</li>
-      <li>You can see my quick video summary on my Instagram <strong>@maria.cybersec</strong></li>
-    </ul>
+  <hr />
 
-    <p><strong>What’s next…?</strong></p>
-    <p>In my second project, I’ll extend this by analyzing network traffic for unusual data exfiltration attempts.</p>
-  </div>
+  <h2>Conclusion</h2>
+  <p>This project has given me me hands-on experience with Splunk search, alerting, and dashboarding. It has also taught me that brute force attacks are noisy, but without the right filtering, the alerts can drown analysts in false positives.</p>
+  <ul>
+    <li>Full SPL queries, alert configs, and screenshots are documented in this post.</li>
+    <li>You can see my quick video summary on my Instagram <strong>@maria.cybersec</strong></li>
+  </ul>
+
+  <p><strong>What’s next…?</strong></p>
+  <p>In my second project, I’ll extend this by analyzing network traffic for unusual data exfiltration attempts.</p>
+
+  <footer class="small">© mariacybersec</footer>
 </body>
 </html>
