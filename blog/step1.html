@@ -1,1 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detecting Brute Force Attacks with Splunk</title>
+  <link rel="stylesheet" href="../style.css"> <!-- reuse your site’s CSS -->
+</head>
+<body>
 
+  <main class="content">
+    <h1>Detecting Brute Force Attacks with Splunk</h1>
+    <p>
+      Brute force attacks aren’t just random password guesses—they are high-volume 
+      authentication failures that leave a clear trail in system logs. In this project, 
+      I built a Splunk workflow to identify brute force activity, create automated alerts, 
+      and visualize the results in a dashboard.
+    </p>
+    <p>
+      This was my first hands-on Splunk project, and here’s how I did it step by step:
+    </p>
+
+    <h2>Step 1: Ingest Authentication Logs</h2>
+    <p>
+      Before detection, Splunk needs the right data. I ingested Linux authentication logs 
+      (<code>linux_auth_demo</code>) into a dedicated index called <code>lab</code>.
+    </p>
+    <div class="screenshot">
+      <p><em>[Screenshot: Data Input / Files & Directories screen]</em></p>
+      <!-- <img src="../assets/img/step1/yourimage.png" alt="Ingesting logs in Splunk"> -->
+    </div>
+
+    <h2>Step 2: Search for Failed Logins</h2>
+    <p>
+      The raw logs contain both successful and failed attempts. To isolate brute force behaviour, 
+      I searched for events with the keyword <code>"Failed password"</code>.
+    </p>
+    <pre><code>index=lab sourcetype=linux_auth_demo "Failed password"</code></pre>
+    <div class="screenshot">
+      <p><em>[Screenshot: Failed login events in Splunk Search & Reporting]</em></p>
+    </div>
+
+    <h2>Step 3: Identify Suspicious Spikes</h2>
+    <p>
+      I grouped failed logins by source IP (<code>src</code>) to detect bursts over time:
+    </p>
+    <pre><code>index=lab sourcetype=linux_auth_demo "Failed password"
+| timechart span=5m count by src</code></pre>
+    <div class="screenshot">
+      <p><em>[Screenshot: timechart showing spikes by IP]</em></p>
+    </div>
+
+    <h2>Step 4: Create a Real-Time Alert</h2>
+    <p>
+      Detecting is good, but alerts are what analysts rely on. I converted the search into an alert:
+    </p>
+    <ul>
+      <li><strong>Type:</strong> Real-time</li>
+      <li><strong>Trigger:</strong> If failed logins exceed 5 in 5 minutes</li>
+      <li><strong>Throttle:</strong> By source IP (avoid spam)</li>
+      <li><strong>Severity:</strong> High</li>
+    </ul>
+    <div class="screenshot">
+      <p><em>[Screenshot: Alert configuration panel]</em></p>
+    </div>
+
+    <h2>Step 5: Build a Dashboard Panel</h2>
+    <p>
+      I visualized the results in a Splunk dashboard with:
+    </p>
+    <ul>
+      <li><strong>X-axis:</strong> Time</li>
+      <li><strong>Y-axis:</strong> Failed login attempts</li>
+      <li><strong>Split by:</strong> Source IP</li>
+    </ul>
+    <div class="screenshot">
+      <p><em>[Screenshot: Splunk dashboard panel]</em></p>
+    </div>
+
+    <h2>Step 6: Reduce False Positives</h2>
+    <p>
+      Not every spike is malicious. I filtered out service accounts and test data 
+      to keep focus on real brute force attempts.
+    </p>
+    <div class="screenshot">
+      <p><em>[Screenshot: SPL query with filters]</em></p>
+    </div>
+
+    <h2>Conclusion</h2>
+    <p>
+      This project gave me hands-on experience with Splunk search, alerting, and dashboards. 
+      I learned that brute force attacks are noisy, and without the right filtering, 
+      alerts can overwhelm analysts.
+    </p>
+    <p>
+      • Full queries, configs, and screenshots are included in this post.  
+      • Quick video summary is on my Instagram <strong>@maria.cybersec</strong>.
+    </p>
+
+    <h3>What’s next?</h3>
+    <p>
+      In my next project, I’ll extend this to detect unusual data exfiltration attempts 
+      using Splunk network logs.
+    </p>
+  </main>
+
+</body>
+</html>
