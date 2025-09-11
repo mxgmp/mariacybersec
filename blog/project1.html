@@ -6,21 +6,38 @@
   <title>Project 1 — Detecting Brute Force Attacks with Splunk</title>
   <meta name="description" content="Detecting brute force attacks with Splunk: data ingest, searches, alerting, and dashboarding.">
   <style>
-    :root{
-      --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32;
+    :root{ --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32; }
+    html,body{
+      margin:0; padding:0; background:var(--bg); color:var(--fg);
+      font:15px/1.7 Helvetica, "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     }
-    html,body{margin:0; padding:0; background:var(--bg); color:var(--fg);
-      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      line-height:1.6;}
-    .container{max-width:860px; margin:32px auto 80px; padding:0 16px;}
-    a{color:var(--accent); text-decoration:none;} a:hover{text-decoration:underline;}
-    header{padding:16px 0;}
-    .back{font-size:14px;}
-    h1{font-size:28px; margin:6px 0 14px; color:#c9bbff;}
-    h2{font-size:18px; margin:26px 0 8px; color:#c9bbff;}
-    p, li{font-size:15px;}
-    ul{margin:8px 0 16px 20px;}
-    hr{border:0; border-top:1px solid var(--border); margin:24px 0;}
+    .container{ max-width:860px; margin:32px auto 80px; padding:0 16px; }
+
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    header{ padding:16px 0; }
+    .back{ font-size:14px; color:var(--muted); }
+
+    h1,h2{ font-family:"Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif; letter-spacing:.02em; }
+    h1{ font-size:28px; margin:6px 0 14px; color:#c9bbff; }
+    h2{ font-size:16px; margin:26px 0 8px; color:#c9bbff; }
+
+    p, li{ font-size:15px; }
+    ul{ margin:8px 0 16px 20px; }
+    hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
+
+    .post figure{ margin:12px 0; }
+    .post img{
+      width:100%; max-width:860px;
+      border:1px solid rgba(196,181,253,.18); border-radius:8px;
+      display:block;
+    }
+    .post figcaption{
+      font-size:12.5px; color:var(--muted); text-align:center; margin-top:6px;
+    }
+    .grid{ display:grid; gap:10px; }
+    @media (min-width:800px){ .grid.two{ grid-template-columns:1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -29,7 +46,7 @@
       <a class="back" href="/" aria-label="Back to home">← mariacybersec</a>
     </header>
 
-    <main>
+    <main class="post">
       <h1>Detecting Brute Force Attacks with Splunk</h1>
 
       <p>Brute force attacks aren’t just random password guesses, they are high-volume authentication failures that leave a clear trail in system logs. In this project, I built a Splunk detection workflow to identify brute force activity, create automated alerts, and visualise the results in a dashboard.</p>
@@ -61,7 +78,7 @@
       <h2>Step 5: Build a Dashboard Panel</h2>
       <p>Finally, I visualized the data in a Splunk dashboard panel:</p>
       <ul>
-        <li><strong>X-axis:</strong> Time</li>
+        <li><strong>X-axis:</strong> Time</strong></li>
         <li><strong>Y-axis:</strong> Number of failed login attempts</li>
         <li><strong>Split by:</strong> Source IP</li>
       </ul>
