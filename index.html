@@ -6,29 +6,56 @@
   <title>mariacybersec</title>
   <meta name="description" content="Cybersecurity projects, detection engineering notes, and lab documentation." />
   <style>
-    :root { --bg:#0b0d12; --card:#121320; --text:#e9e9ef; --muted:#a3a7b3; --link:#c4b5fd; --accent:#b09cff; }
+    :root {
+      --bg:#0b0d12; --card:#121320; --text:#e9e9ef; --muted:#a3a7b3;
+      --link:#c4b5fd; --accent:#b09cff;
+    }
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.65 Helvetica,"Helvetica Neue",Arial,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+    html,body{
+      margin:0;padding:0;background:var(--bg);color:var(--text);
+      font:16px/1.65 Helvetica,"Helvetica Neue",Arial,system-ui,-apple-system,Segoe UI,Roboto,sans-serif
+    }
     .wrap{max-width:880px;margin:64px auto;padding:0 24px}
     header{margin-bottom:28px}
-    h1{font-size:34px;margin:0 0 4px;letter-spacing:.2px;text-transform:none;font-family:"Avenir Next",Avenir,Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif}
-    .brand-accent{background:linear-gradient(90deg,var(--link),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
-    h2{font-size:18px;margin:28px 0 8px;color:var(--muted);letter-spacing:.06em}
+    h1{
+      font-size:34px;margin:0 0 4px;letter-spacing:.2px;
+      font-family:"Avenir Next",Avenir,Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif
+    }
+    .brand-accent{
+      background:linear-gradient(90deg,var(--link),var(--accent));
+      -webkit-background-clip:text;background-clip:text;color:transparent
+    }
+    h2{font-size:18px;margin:28px 0 12px;color:var(--muted);letter-spacing:.06em}
     a{color:var(--link);text-decoration:none}
     a:hover{color:#c3d5ff}
     .muted-subheader{color:var(--muted);font-size:14px;letter-spacing:.02em}
-    .projects-list{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+
+    .projects-list{display:flex;flex-direction:column;gap:16px;margin-top:8px}
     .project-item{
       display:block;
-      background:#131318;
-      border:1px solid rgba(196,181,253,.18);
-      border-radius:8px;
-      padding:14px 18px;
-      color:#dcdcdc;
-      transition:background .2s ease, transform .06s ease;
+      background:var(--card);
+      border:1px solid rgba(196,181,253,.22);
+      border-left:4px solid var(--accent);
+      border-radius:10px;
+      padding:18px 20px;
+      color:#e9e9ef;
+      font-size:15px;
+      transition:background .2s ease, transform .08s ease;
+      box-shadow:0 2px 8px rgba(0,0,0,0.25);
     }
-    .project-item:hover{background:#171825;transform:translateY(-1px)}
-    .project-badge{color:var(--accent);font-weight:700;margin-right:8px}
+    .project-item:hover{background:#171825;transform:translateY(-2px)}
+    .project-badge{
+      display:block;
+      font-weight:600;
+      font-size:14px;
+      color:var(--accent);
+      margin-bottom:4px;
+      font-family:"Avenir Next",Avenir,Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif
+    }
+    .project-title{
+      font-size:17px;
+      font-family:"Source Code Pro","Courier New",monospace;
+    }
   </style>
 </head>
 <body>
@@ -42,7 +69,8 @@
       <h2>Projects</h2>
       <div class="projects-list">
         <a class="project-item" href="/blog/project1.html">
-          <span class="project-badge">Project 1:</span> Detecting Brute Force Attacks with Splunk
+          <span class="project-badge">Project 1</span>
+          <span class="project-title">Detecting Brute Force Attacks with Splunk</span>
         </a>
       </div>
     </section>
