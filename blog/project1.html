@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Project 1 — Detecting Brute Force Attacks with Splunk</title>
+  <meta name="description" content="Detecting brute force attacks with Splunk: data ingest, searches, alerting, and dashboarding.">
+  <style>
+    :root{
+      --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32;
+    }
+    html,body{margin:0; padding:0; background:var(--bg); color:var(--fg);
+      font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      line-height:1.6;}
+    .container{max-width:860px; margin:32px auto 80px; padding:0 16px;}
+    a{color:var(--accent); text-decoration:none;} a:hover{text-decoration:underline;}
+    header{padding:16px 0;}
+    .back{font-size:14px;}
+    h1{font-size:28px; margin:6px 0 14px; color:#c9bbff;}
+    h2{font-size:18px; margin:26px 0 8px; color:#c9bbff;}
+    p, li{font-size:15px;}
+    ul{margin:8px 0 16px 20px;}
+    hr{border:0; border-top:1px solid var(--border); margin:24px 0;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a class="back" href="/" aria-label="Back to home">← mariacybersec</a>
+    </header>
+
+    <main>
+      <h1>Detecting Brute Force Attacks with Splunk</h1>
+
+      <p>Brute force attacks aren’t just random password guesses, they are high-volume authentication failures that leave a clear trail in system logs. In this project, I built a Splunk detection workflow to identify brute force activity, create automated alerts, and visualise the results in a dashboard.</p>
+
+      <p>This was my first hands-on Splunk project, and here’s how I did it step by step:</p>
+
+      <h2>Step 1: Ingest Authentication Logs</h2>
+      <p>Before we can detect anything, Splunk needs the right data, so I ingested Linux authentication logs (linux_auth_demo) into a dedicated index called “lab”.</p>
+      <p>I kept all test logs inside the lab index to avoid mixing them with production or default Splunk data.</p>
+
+      <h2>Step 2: Search for Failed Logins</h2>
+      <p>The raw logs contain both successful and failed login attempts. To isolate brute force behaviour, I searched for events with the keyword “Failed password”.</p>
+      <p>This gave me individual failed login attempts, but brute force detection requires grouping them.</p>
+
+      <h2>Step 3: Identify Suspicious Spikes</h2>
+      <p>Afterwards, I built a query that groups failed logins by source IP (src) and counts them over time.</p>
+      <p>This makes it easy to spot IPs generating bursts of failed logins within a short time window.</p>
+
+      <h2>Step 4: Create a Real-Time Alert</h2>
+      <p>Detecting is good, but alerts are what analysts rely on, therefore I converted the search into an alert:</p>
+      <ul>
+        <li><strong>Type:</strong> Real-time</li>
+        <li><strong>Trigger:</strong> If failed login attempts exceed a threshold (for example: 5 in 5 minutes)</li>
+        <li><strong>Throttle:</strong> By source IP (so we don’t get spammed)</li>
+        <li><strong>Severity:</strong> High</li>
+      </ul>
+      <p>This ensures analysts are notified only when brute force activity truly looks suspicious, not just from a user typing a password once by mistake.</p>
+
+      <h2>Step 5: Build a Dashboard Panel</h2>
+      <p>Finally, I visualized the data in a Splunk dashboard panel:</p>
+      <ul>
+        <li><strong>X-axis:</strong> Time</li>
+        <li><strong>Y-axis:</strong> Number of failed login attempts</li>
+        <li><strong>Split by:</strong> Source IP</li>
+      </ul>
+      <p>This gives a clear at-a-glance picture of which IPs are hammering the system.</p>
+
+      <h2>Step 6: Reduce False Positives</h2>
+      <p>Not every spike is malicious, which is why I filtered out service accounts and test environments to avoid false positives and keep the focus on real brute force attempts.</p>
+
+      <h2>Conclusion</h2>
+      <p>This project has given me me hands-on experience with Splunk search, alerting, and dashboarding. It has also taught me that brute force attacks are noisy, but without the right filtering, the alerts can drown analysts in false positives.</p>
+      <ul>
+        <li>Full SPL queries, alert configs, and screenshots are documented in this post.</li>
+        <li>You can see my quick video summary on my Instagram <strong>@maria.cybersec</strong></li>
+      </ul>
+
+      <h2>What’s next…?</h2>
+      <p>In my second project, I’ll extend this by analyzing network traffic for unusual data exfiltration attempts.</p>
+    </main>
+  </div>
+</body>
+</html>
