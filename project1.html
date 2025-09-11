@@ -1,1 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project 1 — Detecting Brute Force Attacks with Splunk • mariacybersec</title>
+  <style>
+    :root{
+      --bg:#0d0f13; --panel:#12151b; --text:#e8e9ee; --muted:#9aa3b2;
+      --accent:#b18cff; --line:#202635; --code:#0f1420;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--text);
+      font:16px/1.65 ui-sans-serif,-apple-system,Segoe UI,Inter,Roboto,"Helvetica Neue",Arial}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:980px;margin:0 auto;padding:40px 22px 96px}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+    .brand a{font-weight:900;font-size:28px;color:#cbb6ff;text-decoration:none;letter-spacing:.2px}
+    nav a{color:var(--muted);margin-left:16px}
+    .hero{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:24px}
+    .kicker{color:#cbb6ff;font-weight:700;letter-spacing:.22em;text-transform:uppercase;font-size:12px}
+    h1{font-size:36px;line-height:1.15;margin:10px 0 6px;font-weight:900}
+    h2{font-size:24px;line-height:1.25;margin:36px 0 12px;font-weight:800}
+    p{margin:12px 0}
+    .lead{color:var(--muted)}
+    .hr{height:1px;background:var(--line);margin:26px 0}
+    figure{margin:18px 0;text-align:center}
+    figure img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--line);background:#000}
+    figcaption{color:var(--muted);font-size:13px;margin-top:8px}
+    ul{margin:10px 0 10px 22px}
+    .meta{color:var(--muted);font-size:13px}
+    @media (max-width:640px){h1{font-size:28px} h2{font-size:20px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand"><a href="/">mariacybersec</a></div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/blog/project1.html" aria-current="page">Project&nbsp;1</a>
+      </nav>
+    </header>
 
+    <section class="hero">
+      <div class="kicker">Project 1</div>
+      <h1>Detecting Brute Force Attacks with Splunk</h1>
+      <p class="lead">
+        Brute force attacks aren’t just random password guesses, they are high-volume authentication failures that leave a clear trail in system logs. In this project, I built a Splunk detection workflow to identify brute force activity, create automated alerts, and visualise the results in a dashboard.
+      </p>
+      <p class="lead">This was my first hands-on Splunk project, and here’s how I did it step by step:</p>
+    </section>
+
+    <!-- STEP 1 -->
+    <section>
+      <h2>Step 1: Ingest Authentication Logs</h2>
+      <p>Before we can detect anything, Splunk needs the right data, so I ingested Linux authentication logs (linux_auth_demo) into a dedicated index called “lab”.</p>
+      <p>👉 Screenshot here: “Data Input / Files & Directories” screen</p>
+      <p>I kept all test logs inside the lab index to avoid mixing them with production or default Splunk data.</p>
+
+      <!-- <figure>
+        <img src="/assets/img/project1/01-data-inputs.png" alt="Data Input / Files & Directories screen">
+        <figcaption>Data Input / Files &amp; Directories</figcaption>
+      </figure> -->
+      <div class="hr"></div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section>
+      <h2>Step 2: Search for Failed Logins</h2>
+      <p>The raw logs contain both successful and failed login attempts. To isolate brute force behaviour, I searched for events with the keyword “Failed password”:</p>
+      <p>👉 Screenshot here: failed login events appearing in Search & Reporting</p>
+      <p>This gave me individual failed login attempts, but brute force detection requires grouping them.</p>
+
+      <!-- <figure>
+        <img src="/assets/img/project1/02-search-results.png" alt="Failed login events in Search & Reporting">
+        <figcaption>Search &amp; Reporting — failed login events</figcaption>
+      </figure> -->
+      <div class="hr"></div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section>
+      <h2>Step 3: Identify Suspicious Spikes</h2>
+      <p>Afterwards, I built a query that groups failed logins by source IP (src) and counts them over time:</p>
+      <p>👉 Screenshot here: timechart output showing IP addresses with failed attempts</p>
+      <p>This makes it easy to spot IPs generating bursts of failed logins within a short time window.</p>
+
+      <!-- <figure>
+        <img src="/assets/img/project1/03-timechart.png" alt="timechart output showing failed attempts">
+        <figcaption>timechart output (failed attempts by IP over time)</figcaption>
+      </figure> -->
+      <div class="hr"></div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section>
+      <h2>Step 4: Create a Real-Time Alert</h2>
+      <p>Detecting is good, but alerts are what analysts rely on, therefore I converted the search into an alert:</p>
+      <ul>
+        <li>•Type: Real-time</li>
+        <li>•Trigger: If failed login attempts exceed a threshold (for example: 5 in 5 minutes)</li>
+        <li>•Throttle: By source IP (so we don’t get spammed)</li>
+        <li>•Severity: High</li>
+      </ul>
+      <p>👉 Screenshot here: Alert configuration page</p>
+      <p>This ensures analysts are notified only when brute force activity truly looks suspicious, not just from a user typing a password once by mistake.</p>
+
+      <!-- <figure>
+        <img src="/assets/img/project1/04-alert-config.png" alt="Alert configuration page">
+        <figcaption>Alert configuration</figcaption>
+      </figure> -->
+      <div class="hr"></div>
+    </section>
+
+    <!-- STEP 5 -->
+    <section>
+      <h2>Step 5: Build a Dashboard Panel</h2>
+      <p>Finally, I visualized the data in a Splunk dashboard panel:</p>
+      <ul>
+        <li>•X-axis: Time</li>
+        <li>•Y-axis: Number of failed login attempts</li>
+        <li>•Split by: Source IP</li>
+      </ul>
+      <p>👉 Screenshot here: dashboard view with chart</p>
+      <p>This gives a clear at-a-glance picture of which IPs are hammering the system.</p>
+
+      <!-- <figure>
+        <img src="/assets/img/project1/05-dashboard.png" alt="Dashboard view with chart">
+        <figcaption>Dashboard view with chart</figcaption>
+      </figure> -->
+      <div class="hr"></div>
+    </section>
+
+    <!-- STEP 6 -->
+    <section>
+      <h2>Step 6: Reduce False Positives</h2>
+      <p>Not every spike is malicious, which is why I filtered out service accounts and test environments to avoid false positives and keep the focus on real brute force attempts.</p>
+      <p>👉 Screenshot here: SPL query showing filters added</p>
+      <div class="hr"></div>
+    </section>
+
+    <!-- CONCLUSION -->
+    <section class="hero">
+      <h2>Conclusion</h2>
+      <p>This project has given me me hands-on experience with Splunk search, alerting, and dashboarding. It has also taught me that brute force attacks are noisy, but without the right filtering, the alerts can drown analysts in false positives.</p>
+      <p>•Full SPL queries, alert configs, and screenshots are documented in this post.<br>
+         •You can see my quick video summary on my Instagram @maria.cybersec</p>
+
+      <h2 style="margin-top:24px">What’s next…?</h2>
+      <p>In my second project, I’ll extend this by analyzing network traffic for unusual data exfiltration attempts.</p>
+    </section>
+
+    <p class="meta" style="margin-top:28px">← <a href="/">Back to home</a></p>
+  </div>
+</body>
+</html>
