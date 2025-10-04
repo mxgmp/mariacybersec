@@ -1,89 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Project 2 — Detecting DNS Exfiltration with Wireshark</title>
+  <meta name="description" content="Detecting DNS exfiltration with Wireshark: simulating normal and suspicious traffic, analyzing packet behavior, and spotting tunneling patterns.">
   <style>
-    :root{
-      --bg:#0b0b0c;         /* near-black background */
-      --fg:#dcdcdc;         /* light gray text */
-      --muted:#a9a9a9;      /* secondary text */
-      --accent:#b8a1ff;     /* gentle purple */
+    :root{ --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32; }
+    html,body{
+      margin:0; padding:0; background:var(--bg); color:var(--fg);
+      font:15px/1.7 Helvetica, "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     }
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);}
-    body{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:15px;              /* smaller, not kiddie-large */
-      line-height:1.65;
-      -webkit-font-smoothing:antialiased;
-      max-width:880px;
-      padding:32px 18px 80px;
-      margin:0 auto;
-    }
-    header{margin-bottom:18px;}
-    h1{
-      font-size:24px;
-      font-weight:700;
-      color:var(--accent);
-      margin:0 0 10px 0;
-      letter-spacing:.2px;
-    }
-    .lede{color:var(--fg); margin:0 0 12px 0;}
-    p{margin:10px 0;}
-    h2{
-      font-size:16px;
-      color:var(--fg);
-      margin:26px 0 10px;
-    }
-    strong{color:#fff;}
-    u{text-decoration:underline;}
-    ul{margin:8px 0 14px 18px;}
-    li{margin:4px 0;}
-    .muted{color:var(--muted);}
-    a{color:var(--accent); text-decoration:none;}
+    .container{ max-width:860px; margin:32px auto 80px; padding:0 16px; }
+
+    a{ color:var(--accent); text-decoration:none; }
     a:hover{ text-decoration:underline; }
-    code{background:#131318; color:#eaeaea; padding:2px 5px; border-radius:4px;}
-    hr{
-      border:0; height:1px; background:#19191f; margin:28px 0;
+
+    header{ padding:16px 0; }
+    .back{ font-size:14px; color:var(--muted); }
+
+h1, h2 {
+  font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #c9bbff; /* same purple accent */
+}
+
+p, li {
+  font-family: "Source Code Pro", "Courier New", monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #d7d7e0;
+}
+    ul{ margin:8px 0 16px 20px; }
+    hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
+
+    .post figure{ margin:12px 0; }
+    .post img{
+      width:100%; max-width:860px;
+      border:1px solid rgba(196,181,253,.18); border-radius:8px;
+      display:block;
     }
-    footer{margin-top:28px; color:var(--muted); font-size:13px;}
-    /* optional image styling (for later) */
-    .img{margin:12px 0; border-radius:8px; display:block; max-width:100%; height:auto;}
-    .small{font-size:13.5px;}
+    .post figcaption{
+      font-size:12.5px; color:var(--muted); text-align:center; margin-top:6px;
+    }
+    .grid{ display:grid; gap:10px; }
+    @media (min-width:800px){ .grid.two{ grid-template-columns:1fr 1fr; } }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Detecting DNS Exfiltration with Wireshark</h1>
-    <p class="lede">DNS tunneling is a stealthy way attackers exfiltrate data through DNS queries that look normal. In this mini lab, I simulated both normal and suspicious DNS traffic using Python + Scapy, then analyzed packet behavior in Wireshark to detect signs of data exfiltration.</p>
-    <p class="lede">This is the part 2 of my hands-on network forensics series, which is focused on identifying unusual DNS patterns that could indicate tunneling or data leaks.</p>
-  </header>
+  <div class="container">
+    <header>
+      <a class="back" href="/" aria-label="Back to home">← mariacybersec</a>
+    </header>
 
-  <h2>Step 1: Generate Simulated DNS Traffic</h2>
-<p>I wrote a short Python script using <code>Scapy</code> to generate a <code>.pcap</code> file containing both normal DNS queries and suspicious, high entropy subdomains that mimic exfiltration behavior. The file was then exported for Wireshark analysis.</p>
+    <main class="post">
+      <h1>Detecting DNS Exfiltration with Wireshark</h1>
 
-<h2>Step 2: Analyze the PCAP in Wireshark</h2>
-<p>Opening the <code>project2_dns_tunnel.pcap</code> file, I inspected DNS packets and compared legitimate queries (<code>google.com</code>, <code>github.com</code>, etc.) with the generated suspicious traffic (<code>*.exfil.example</code>).</p>
+      <p>DNS tunneling is a stealthy way attackers exfiltrate data through DNS queries that look normal. In this mini lab, I simulated both normal and suspicious DNS traffic using Python + Scapy, then analyzed packet behavior in Wireshark to detect signs of data exfiltration.</p>
 
-<h2>Step 3: Observe Normal DNS Queries</h2>
-<p>Normal traffic showed low entropy, human readable domain names and proper DNS responses. These packets represented standard user initiated lookups.</p>
+      <p>This is the part 2 of my hands-on network forensics series, which is focused on identifying unusual DNS patterns that could indicate tunneling or data leaks.</p>
 
-<h2>Step 4: Identify Suspicious Patterns</h2>
-<p>Suspicious traffic displayed unusual long subdomains filled with random characters ,a clear indicator of data exfiltration via DNS tunneling. Many queries had no responses or incomplete exchanges, therefore suggesting abnormal activity.</p>
+      <h2>Step 1: Generate Simulated DNS Traffic</h2>
+      <p>I wrote a short Python script using <code>Scapy</code> to generate a <code>.pcap</code> file containing both normal DNS queries and suspicious, high entropy subdomains that mimic exfiltration behavior. The file was then exported for Wireshark analysis.</p>
 
-<h2>Step 5: Compare Entropy & Behavior</h2>
-<p>By visually comparing both patterns, I could confirm how tunneled data often looks chaotic compared to ordinary DNS traffic. Even without automation, this manual inspection highlights how analysts can spot covert channels.</p>
+      <h2>Step 2: Analyze the PCAP in Wireshark</h2>
+      <p>Opening the <code>project2_dns_tunnel.pcap</code> file, I inspected DNS packets and compared legitimate queries (<code>google.com</code>, <code>github.com</code>, etc.) with the generated suspicious traffic (<code>*.exfil.example</code>).</p>
 
-<hr />
+      <h2>Step 3: Observe Normal DNS Queries</h2>
+      <p>Normal traffic showed low entropy, human readable domain names and proper DNS responses. These packets represented standard user initiated lookups.</p>
 
-<h2>Conclusion</h2>
-<p>This lab has deepened my understanding of how exfiltration can hide within legitimate protocols. Hands-on traffic simulation and analysis has given me a clear understanding of how DNS tunneling operates and how to identify it visually in Wireshark.</p>
-<ul>
-  <li>All screenshots and packet captures are documented in this post.</li>
-  <li>See my quick summary on Instagram <strong>@maria.cybersec</strong>.</li>
-</ul>
+      <h2>Step 4: Identify Suspicious Patterns</h2>
+      <p>Suspicious traffic displayed unusual long subdomains filled with random characters ,a clear indicator of data exfiltration via DNS tunneling. Many queries had no responses or incomplete exchanges, therefore suggesting abnormal activity.</p>
 
-<footer class="small">© mariacybersec</footer>
+      <h2>Step 5: Compare Entropy & Behavior</h2>
+      <p>By visually comparing both patterns, I could confirm how tunneled data often looks chaotic compared to ordinary DNS traffic. Even without automation, this manual inspection highlights how analysts can spot covert channels.</p>
+
+      <hr />
+
+      <h2>Conclusion</h2>
+      <p>This lab has deepened my understanding of how exfiltration can hide within legitimate protocols. Hands-on traffic simulation and analysis has given me a clear understanding of how DNS tunneling operates and how to identify it visually in Wireshark.</p>
+      <ul>
+        <li>All screenshots and packet captures are documented in this post.</li>
+        <li>See my quick summary on Instagram <strong>@maria.cybersec</strong>.</li>
+      </ul>
+    </main>
+  </div>
 </body>
 </html>
