@@ -34,6 +34,7 @@
     ul{ margin:8px 0 16px 20px; }
     hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
 
+    /* Image presentation used earlier for inline figures (kept for consistency) */
     .post figure{ margin:12px 0; }
     .post img{
       width:100%; max-width:860px;
@@ -46,7 +47,7 @@
     .grid{ display:grid; gap:10px; }
     @media (min-width:800px){ .grid.two{ grid-template-columns:1fr 1fr; } }
 
-    /* gallery + lightbox */
+    /* Gallery + Lightbox (no captions) */
     .muted{ color:var(--muted); }
     .project-gallery{ margin-top:28px }
     .project-gallery h2{ color:var(--accent); margin-bottom:6px }
@@ -63,9 +64,7 @@
       cursor:zoom-in; transition:transform .2s ease, box-shadow .2s ease;
     }
     .img-grid img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(0,0,0,.45) }
-    .img-grid figcaption{
-      margin-top:6px; color:var(--muted); font-size:12.8px; text-align:center;
-    }
+
     .lightbox{
       position:fixed; inset:0; display:none; place-items:center;
       background:rgba(0,0,0,.82); z-index:9999; padding:22px;
@@ -95,7 +94,7 @@
       <p>This was my first hands-on Splunk project, and here’s how I did it step by step:</p>
 
       <h2>Step 1: Ingest Authentication Logs</h2>
-      <p>Before we can detect anything, Splunk needs the right data, so I ingested Linux authentication logs (linux_auth_demo) into a dedicated index called “lab”.</p>
+      <p>Before we can detect anything, Splunk needs the right data, so I ingested Linux authentication logs (<code>linux_auth_demo</code>) into a dedicated index called “lab”.</p>
       <p>I kept all test logs inside the lab index to avoid mixing them with production or default Splunk data.</p>
 
       <h2>Step 2: Search for Failed Logins</h2>
@@ -103,7 +102,7 @@
       <p>This gave me individual failed login attempts, but brute force detection requires grouping them.</p>
 
       <h2>Step 3: Identify Suspicious Spikes</h2>
-      <p>Afterwards, I built a query that groups failed logins by source IP (src) and counts them over time.</p>
+      <p>Afterwards, I built a query that groups failed logins by source IP (<code>src</code>) and counts them over time.</p>
       <p>This makes it easy to spot IPs generating bursts of failed logins within a short time window.</p>
 
       <h2>Step 4: Create a Real-Time Alert</h2>
@@ -135,27 +134,26 @@
         <li>You can see my quick video summary on my Instagram <strong>@maria.cybersec</strong></li>
       </ul>
 
-      <!-- === Project 1 Image Gallery (with captions) === -->
+      <!-- === Project 1 Image Gallery (no captions) === -->
       <section class="project-gallery">
-        <h2> Project Screenshots</h2>
-        <p class="muted">A visual walkthrough of each step; from log ingestion to dashboard visualisation and alerting.</p>
+        <h2>Project Screenshots</h2>
+        <p class="muted">Click any image to zoom.</p>
 
         <div class="img-grid">
-          <figure><img src="/assets/project1/1.jpg?v=1" alt="Create auth_demo.log"><figcaption>Step 1 — Create <code>auth_demo.log</code> in terminal</figcaption></figure>
-          <figure><img src="/assets/project1/2.jpg?v=1" alt="Populate sample auth log entries"><figcaption>Step 2 — Populate sample auth log entries</figcaption></figure>
-          <figure><img src="/assets/project1/3.jpg?v=1" alt="Add Data → Files & Directories"><figcaption>Step 3 — Add Data → Files & Directories</figcaption></figure>
-          <figure><img src="/assets/project1/4.jpg?v=1" alt="Set source type & preview events"><figcaption>Step 4 — Set source type & preview events</figcaption></figure>
-          <figure><img src="/assets/project1/5.jpg?v=1" alt="Input settings: host & index context"><figcaption>Step 5 — Input settings: host & index context</figcaption></figure>
-          <figure><img src="/assets/project1/6.jpg?v=1" alt="Create the lab index"><figcaption>Step 6 — Create the <code>lab</code> index</figcaption></figure>
-          <figure><img src="/assets/project1/7.jpg?v=1" alt="SPL stats: failed attempts by src"><figcaption>Step 7 — SPL stats: failed attempts by <code>src</code></figcaption></figure>
-          <figure><img src="/assets/project1/8.jpg?v=1" alt="Refined SPL with rex & thresholds"><figcaption>Step 8 — Refined SPL with <code>rex</code> & thresholds</figcaption></figure>
-          <figure><img src="/assets/project1/9.jpg?v=1" alt="Dashboard: failed logins over time"><figcaption>Step 9 — Dashboard: failed logins over time</figcaption></figure>
-          <figure><img src="/assets/project1/10.jpg?v=1" alt="Panel config: fields & axes"><figcaption>Step 10 — Panel config: fields & axes</figcaption></figure>
-          <figure><img src="/assets/project1/11.jpg?v=1" alt="Alert rule + throttle by src"><figcaption>Step 11 — Alert rule + throttle by <code>src</code></figcaption></figure>
-          <figure><img src="/assets/project1/12.jpg?v=1" alt="Advanced alert settings"><figcaption>Step 12 — Advanced alert settings</figcaption></figure>
+          <figure><img loading="lazy" src="/assets/project1/1.jpg?v=2"  alt="Screenshot 1"></figure>
+          <figure><img loading="lazy" src="/assets/project1/2.jpg?v=2"  alt="Screenshot 2"></figure>
+          <figure><img loading="lazy" src="/assets/project1/3.jpg?v=2"  alt="Screenshot 3"></figure>
+          <figure><img loading="lazy" src="/assets/project1/4.jpg?v=2"  alt="Screenshot 4"></figure>
+          <figure><img loading="lazy" src="/assets/project1/5.jpg?v=2"  alt="Screenshot 5"></figure>
+          <figure><img loading="lazy" src="/assets/project1/6.jpg?v=2"  alt="Screenshot 6"></figure>
+          <figure><img loading="lazy" src="/assets/project1/7.jpg?v=2"  alt="Screenshot 7"></figure>
+          <figure><img loading="lazy" src="/assets/project1/8.jpg?v=2"  alt="Screenshot 8"></figure>
+          <figure><img loading="lazy" src="/assets/project1/9.jpg?v=2"  alt="Screenshot 9"></figure>
+          <figure><img loading="lazy" src="/assets/project1/10.jpg?v=2" alt="Screenshot 10"></figure>
+          <figure><img loading="lazy" src="/assets/project1/11.jpg?v=2" alt="Screenshot 11"></figure>
+          <figure><img loading="lazy" src="/assets/project1/12.jpg?v=2" alt="Screenshot 12"></figure>
         </div>
       </section>
-
     </main>
   </div>
 
@@ -172,8 +170,8 @@
       const lbClose = document.getElementById('lbClose');
       document.querySelectorAll('.img-grid img').forEach(img=>{
         img.addEventListener('click',()=>{
-          lbImg.src=img.dataset.full||img.src;
-          lbImg.alt=img.alt||'';
+          lbImg.src = img.dataset.full || img.src;
+          lbImg.alt = img.alt || '';
           lb.classList.add('open');
           lb.setAttribute('aria-hidden','false');
           document.body.style.overflow='hidden';
@@ -186,13 +184,9 @@
         lbImg.src='';
       }
       lbClose.addEventListener('click',closeLB);
-      lb.addEventListener('click',e=>{if(e.target===lb)closeLB();});
-      window.addEventListener('keydown',e=>{if(e.key==='Escape')closeLB();});
+      lb.addEventListener('click',e=>{ if(e.target===lb) closeLB(); });
+      window.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLB(); });
     })();
   </script>
-
-  <h2>What’s next…?</h2>
-      <p>In my second project, I’ll extend this by analyzing network traffic for unusual data exfiltration attempts.</p>
-  
 </body>
 </html>
