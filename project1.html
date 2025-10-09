@@ -106,6 +106,60 @@
   <p><strong>What’s next…?</strong></p>
   <p>In my second project, I’ll extend this by analyzing network traffic for unusual data exfiltration attempts.</p>
 
+  <!-- === Project 1 Image Gallery === -->
+  <section class="project-gallery">
+    <h2>📸 Project Screenshots</h2>
+    <p class="muted">A visual walkthrough of each step — from log ingestion to dashboard visualization and alert configuration.</p>
+
+    <div class="img-grid">
+      <img src="../assets/project1/1.jpg" alt="Step 1: Create auth_demo.log">
+      <img src="../assets/project1/2.jpg" alt="Step 2: Populate log entries">
+      <img src="../assets/project1/3.jpg" alt="Step 3: Add data to Splunk">
+      <img src="../assets/project1/4.jpg" alt="Step 4: Set source type">
+      <img src="../assets/project1/5.jpg" alt="Step 5: Input settings">
+      <img src="../assets/project1/6.jpg" alt="Step 6: Index configuration">
+      <img src="../assets/project1/7.jpg" alt="Step 7: Failed login statistics">
+      <img src="../assets/project1/8.jpg" alt="Step 8: SPL search query">
+      <img src="../assets/project1/9.jpg" alt="Step 9: Dashboard visualization">
+      <img src="../assets/project1/10.jpg" alt="Step 10: Widget configuration">
+      <img src="../assets/project1/11.jpg" alt="Step 11: Alert creation">
+      <img src="../assets/project1/12.jpg" alt="Step 12: Final summary and configuration">
+    </div>
+  </section>
+
+  <style>
+    .project-gallery {
+      margin-top: 60px;
+      text-align: center;
+    }
+    .project-gallery h2 {
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .project-gallery .muted {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .img-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+    .img-grid img {
+      width: 270px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      cursor: zoom-in;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .img-grid img:hover {
+      transform: scale(1.2);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+  </style>
+  <!-- === End of Gallery === -->
+  
   <footer class="small">© mariacybersec</footer>
 </body>
 </html>
