@@ -23,29 +23,14 @@
       font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
       color: #c9bbff;
     }
-
     p, li {
       font-family: "Source Code Pro", "Courier New", monospace;
       font-size: 15px;
       line-height: 1.6;
       color: #d7d7e0;
     }
-
     ul{ margin:8px 0 16px 20px; }
     hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
-
-    /* Image presentation used earlier for inline figures (kept for consistency) */
-    .post figure{ margin:12px 0; }
-    .post img{
-      width:100%; max-width:860px;
-      border:1px solid rgba(196,181,253,.18); border-radius:8px;
-      display:block;
-    }
-    .post figcaption{
-      font-size:12.5px; color:var(--muted); text-align:center; margin-top:6px;
-    }
-    .grid{ display:grid; gap:10px; }
-    @media (min-width:800px){ .grid.two{ grid-template-columns:1fr 1fr; } }
 
     /* Gallery + Lightbox (no captions) */
     .muted{ color:var(--muted); }
@@ -129,10 +114,6 @@
 
       <h2>Conclusion</h2>
       <p>This project has given me hands-on experience with Splunk search, alerting, and dashboarding. It has also taught me that brute force attacks are noisy, but without the right filtering, the alerts can drown analysts in false positives.</p>
-      <ul>
-        <li>Full SPL queries, alert configs, and screenshots are documented in this post.</li>
-        <li>You can see my quick video summary on my Instagram <strong>@maria.cybersec</strong></li>
-      </ul>
 
       <!-- === Project 1 Image Gallery (no captions) === -->
       <section class="project-gallery">
@@ -154,6 +135,10 @@
           <figure><img loading="lazy" src="/assets/project1/12.jpg?v=2" alt="Screenshot 12"></figure>
         </div>
       </section>
+
+      <p class="muted" style="margin-top:18px">
+        See the quick summary on Instagram <strong>@maria.cybersec</strong>.
+      </p>
     </main>
   </div>
 
