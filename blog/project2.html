@@ -19,17 +19,16 @@
     header{ padding:16px 0; }
     .back{ font-size:14px; color:var(--muted); }
 
-h1, h2 {
-  font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #c9bbff; /* same purple accent */
-}
-
-p, li {
-  font-family: "Source Code Pro", "Courier New", monospace;
-  font-size: 15px;
-  line-height: 1.6;
-  color: #d7d7e0;
-}
+    h1, h2 {
+      font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #c9bbff; /* same purple accent */
+    }
+    p, li {
+      font-family: "Source Code Pro", "Courier New", monospace;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #d7d7e0;
+    }
     ul{ margin:8px 0 16px 20px; }
     hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
 
@@ -39,11 +38,38 @@ p, li {
       border:1px solid rgba(196,181,253,.18); border-radius:8px;
       display:block;
     }
-    .post figcaption{
-      font-size:12.5px; color:var(--muted); text-align:center; margin-top:6px;
+
+    /* gallery + lightbox */
+    .muted{ color:var(--muted); }
+    .project-gallery{ margin-top:28px }
+    .project-gallery h2{ color:var(--accent); margin-bottom:6px }
+    .img-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+      gap:14px;
     }
-    .grid{ display:grid; gap:10px; }
-    @media (min-width:800px){ .grid.two{ grid-template-columns:1fr 1fr; } }
+    .img-grid figure{ margin:0 }
+    .img-grid img{
+      width:100%; height:auto; display:block; border-radius:10px;
+      border:1px solid rgba(196,181,253,.18);
+      box-shadow:0 4px 15px rgba(0,0,0,.25);
+      cursor:zoom-in; transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .img-grid img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(0,0,0,.45) }
+
+    .lightbox{
+      position:fixed; inset:0; display:none; place-items:center;
+      background:rgba(0,0,0,.82); z-index:9999; padding:22px;
+    }
+    .lightbox.open{ display:grid }
+    .lightbox img{
+      max-width:min(1200px,92vw); max-height:86vh; border-radius:12px;
+      box-shadow:0 10px 40px rgba(0,0,0,.6);
+    }
+    .lightbox .close{
+      position:absolute; top:12px; right:16px; font-size:28px;
+      color:#fff; cursor:pointer; line-height:1
+    }
   </style>
 </head>
 <body>
@@ -66,58 +92,73 @@ p, li {
       <p>Opening the <code>project2_dns_tunnel.pcap</code> file, I inspected DNS packets and compared legitimate queries (<code>google.com</code>, <code>github.com</code>, etc.) with the generated suspicious traffic (<code>*.exfil.example</code>).</p>
 
       <h2>Step 3: Observe Normal DNS Queries</h2>
-      <p>Normal traffic showed low entropy, human readable domain names and proper DNS responses. These packets represented standard user initiated lookups.</p>
+      <p>Normal traffic showed low entropy, human readable domain names and proper DNS responses. These packets represented standard user-initiated lookups.</p>
 
       <h2>Step 4: Identify Suspicious Patterns</h2>
-      <p>Suspicious traffic displayed unusual long subdomains filled with random characters ,a clear indicator of data exfiltration via DNS tunneling. Many queries had no responses or incomplete exchanges, therefore suggesting abnormal activity.</p>
+      <p>Suspicious traffic displayed unusually long subdomains filled with random characters — a common indicator of DNS tunneling. Many queries had no responses or incomplete exchanges, suggesting abnormal activity.</p>
 
       <h2>Step 5: Compare Entropy & Behavior</h2>
-      <p>By visually comparing both patterns, I could confirm how tunneled data often looks chaotic compared to ordinary DNS traffic. Even without automation, this manual inspection highlights how analysts can spot covert channels.</p>
+      <p>By visually comparing both patterns, I confirmed how tunneled data often looks chaotic compared to ordinary DNS traffic. Even without automation, this manual inspection highlights how analysts can spot covert channels.</p>
 
       <hr />
 
       <h2>Conclusion</h2>
-      <p>This lab has deepened my understanding of how exfiltration can hide within legitimate protocols. Hands-on traffic simulation and analysis has given me a clear understanding of how DNS tunneling operates and how to identify it visually in Wireshark.</p>
-      
+      <p>This lab deepened my understanding of how exfiltration can hide within legitimate protocols. Hands-on traffic simulation and analysis gave me a clear picture of how DNS tunneling operates and how to identify it visually in Wireshark.</p>
+
       <hr />
 
-<h2>Screenshots</h2>
+      <!-- === Screenshot gallery (no captions) === -->
+      <section class="project-gallery">
+        <h2>Screenshots</h2>
+        <p class="muted">Click any image to zoom.</p>
 
-<figure>
-  <img src="/assets/project2/IMG_5410.jpeg" alt="DNS simulation overview">
-  <figcaption>Simulated DNS traffic and .pcap file ready for Wireshark</figcaption>
-</figure>
+        <div class="img-grid">
+          <figure><img loading="lazy" src="/assets/project2/IMG_5410.jpeg" alt="DNS simulation overview and PCAP ready"></figure>
+          <figure><img loading="lazy" src="/assets/project2/IMG_5409.JPG"  alt="Wireshark DNS capture"></figure>
+          <figure><img loading="lazy" src="/assets/project2/IMG_5403.jpg"  alt="Normal DNS traffic view"></figure>
+          <figure><img loading="lazy" src="/assets/project2/IMG_5404.jpg"  alt="Suspicious long randomized subdomains"></figure>
+          <figure><img loading="lazy" src="/assets/project2/IMG_5401.jpg"  alt="DNS tunneling with missing responses"></figure>
+          <figure><img loading="lazy" src="/assets/project2/IMG_5402.jpg"  alt="Side-by-side comparison normal vs suspicious"></figure>
+        </div>
+      </section>
 
-<figure>
-  <img src="/assets/project2/IMG_5409.JPG" alt="Wireshark DNS capture">
-  <figcaption>Wireshark capture showing mixed DNS query activity</figcaption>
-</figure>
-
-<figure>
-  <img src="/assets/project2/IMG_5403.jpg" alt="Normal DNS traffic">
-  <figcaption>Low-entropy, standard DNS queries</figcaption>
-</figure>
-
-<figure>
-  <img src="/assets/project2/IMG_5404.jpg" alt="Suspicious DNS traffic">
-  <figcaption>Randomized subdomains suggesting possible data exfiltration</figcaption>
-</figure>
-
-<figure>
-  <img src="/assets/project2/IMG_5401.jpg" alt="DNS tunneling with missing responses">
-  <figcaption>DNS tunneling pattern with incomplete responses</figcaption>
-</figure>
-
-<figure>
-  <img src="/assets/project2/IMG_5402.jpg" alt="Comparison view">
-  <figcaption>Visual contrast between normal and suspicious DNS activity</figcaption>
-</figure>
-
-<ul>
-  <li>All screenshots and packet captures are documented in this post.</li>
-  <li>See my quick summary on Instagram <strong>@maria.cybersec</strong>.</li>
-</ul>
+      <ul>
+        <li>All screenshots and packet captures are documented in this post.</li>
+        <li>See my quick summary on Instagram <strong>@maria.cybersec</strong>.</li>
+      </ul>
     </main>
   </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <span class="close" id="lbClose" aria-label="Close">×</span>
+    <img id="lbImg" alt="">
+  </div>
+
+  <script>
+    (function(){
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      const lbClose = document.getElementById('lbClose');
+      document.querySelectorAll('.img-grid img').forEach(img=>{
+        img.addEventListener('click',()=>{
+          lbImg.src = img.dataset.full || img.src;
+          lbImg.alt = img.alt || '';
+          lb.classList.add('open');
+          lb.setAttribute('aria-hidden','false');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+      function closeLB(){
+        lb.classList.remove('open');
+        lb.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+      }
+      lbClose.addEventListener('click', closeLB);
+      lb.addEventListener('click', e => { if (e.target === lb) closeLB(); });
+      window.addEventListener('keydown', e => { if (e.key === 'Escape') closeLB(); });
+    })();
+  </script>
 </body>
 </html>
