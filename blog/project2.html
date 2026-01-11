@@ -74,7 +74,7 @@
     <main class="post">
       <h1>Detecting DNS Exfiltration with Wireshark</h1>
 
-      <p>DNS tunneling is a stealthy way attackers exfiltrate data through DNS queries that look normal. In this mini lab, I simulated both normal and suspicious DNS traffic using Python + Scapy, then analyzed packet behavior in Wireshark to detect signs of data exfiltration.</p>
+      <p>DNS tunneling is how attackers exfiltrate data through DNS queries that look normal. In this mini lab, I simulated both normal and suspicious DNS traffic using Python + Scapy, then analyzed packet behavior in Wireshark to detect signs of data exfiltration.</p>
 
       <p>This is the part 2 of my hands-on network forensics series, which is focused on identifying unusual DNS patterns that could indicate tunneling or data leaks.</p>
 
@@ -88,7 +88,7 @@
       <p>Normal traffic showed low entropy, human readable domain names and proper DNS responses. These packets represented standard user-initiated lookups.</p>
 
       <h2>Step 4: Identify Suspicious Patterns</h2>
-      <p>Suspicious traffic displayed unusually long subdomains filled with random characters — a common indicator of DNS tunneling. Many queries had no responses or incomplete exchanges, suggesting abnormal activity.</p>
+      <p>Suspicious traffic showed unusually long subdomains filled with random characters; a common indicator of DNS tunneling. Many queries had no responses or incomplete exchanges, which suggests abnormal activity.</p>
 
       <h2>Step 5: Compare Entropy & Behavior</h2>
       <p>By visually comparing both patterns, I confirmed how tunneled data often looks chaotic compared to ordinary DNS traffic. Even without automation, this manual inspection highlights how analysts can spot covert channels.</p>
