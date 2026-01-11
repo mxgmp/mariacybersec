@@ -74,7 +74,7 @@
     <main class="post">
       <h1>Detecting Brute Force Attacks with Splunk</h1>
 
-      <p>Brute force attacks aren’t just random password guesses, they are high-volume authentication failures that leave a clear trail in system logs. In this project, I built a Splunk detection workflow to identify brute force activity, create automated alerts, and visualise the results in a dashboard.</p>
+      <p>Brute force attacks aren’t just random password guesses. They are high-volume authentication failures that leave a clear trail in system logs. In this project, I built a Splunk detection workflow to identify brute force activity, create automated alerts, and visualise the results in a dashboard.</p>
 
       <p>This was my first hands-on Splunk project, and here’s how I did it step by step:</p>
 
@@ -109,11 +109,11 @@
       </ul>
       <p>This gives a clear at-a-glance picture of which IPs are hammering the system.</p>
 
-      <h2>Step 6: Reduce False Positives</h2>
+      <h2>Step 6: Filter Out Noise</h2>
       <p>Not every spike is malicious, which is why I filtered out service accounts and test environments to avoid false positives and keep the focus on real brute force attempts.</p>
 
       <h2>Conclusion</h2>
-      <p>This project has given me hands-on experience with Splunk search, alerting, and dashboarding. It has also taught me that brute force attacks are noisy, but without the right filtering, the alerts can drown analysts in false positives.</p>
+      <p>This project gave me hands-on experience with Splunk search, alerting, and dashboarding. It has also taught me that brute force attacks are noisy; but without the right filtering, the alerts can drown analysts in false positives.</p>
 
       <!-- === Project 1 Image Gallery (no captions) === -->
       <section class="project-gallery">
