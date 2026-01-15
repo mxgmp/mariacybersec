@@ -1,1 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>The Silent SIEM: Why Data ≄ Detection</title>
+  <meta name="description" content="A Post-Mortem on Stateless Logic & Telemetry Gaps in Elastic SIEM.">
+  <style>
+    :root{ --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32; }
+    html,body{
+      margin:0; padding:0; background:var(--bg); color:var(--fg);
+      font:15px/1.7 Helvetica, "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+    .container{ max-width:860px; margin:32px auto 80px; padding:0 16px; }
 
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    header{ padding:16px 0; }
+    .back{ font-size:14px; color:var(--muted); }
+
+    h1, h2 {
+      font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #c9bbff;
+    }
+    p, li {
+      font-family: "Source Code Pro", "Courier New", monospace;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #d7d7e0;
+    }
+    ul{ margin:8px 0 16px 20px; }
+    hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
+
+    /* gallery + lightbox */
+    .muted{ color:var(--muted); }
+    .project-gallery{ margin-top:28px }
+    .project-gallery h2{ color:var(--accent); margin-bottom:6px }
+    .img-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+      gap:14px;
+    }
+    .img-grid figure{ margin:0 }
+    .img-grid img{
+      width:100%; height:auto; display:block; border-radius:10px;
+      border:1px solid rgba(196,181,253,.18);
+      box-shadow:0 4px 15px rgba(0,0,0,.25);
+      cursor:zoom-in; transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .img-grid img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(0,0,0,.45) }
+
+    .lightbox{
+      position:fixed; inset:0; display:none; place-items:center;
+      background:rgba(0,0,0,.82); z-index:9999; padding:22px;
+    }
+    .lightbox.open{ display:grid }
+    .lightbox img{
+      max-width:min(1200px,92vw); max-height:86vh; border-radius:12px;
+      box-shadow:0 10px 40px rgba(0,0,0,.6);
+    }
+    .lightbox .close{
+      position:absolute; top:12px; right:16px; font-size:28px;
+      color:#fff; cursor:pointer; line-height:1
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a class="back" href="/" aria-label="Back to home">← mariacybersec</a>
+    </header>
+
+    <main class="post">
+      <h1>The Silent SIEM: Why Data ≄ Detection</h1>
+
+      <p><strong>A Post-Mortem on Stateless Logic & Telemetry Gaps</strong></p>
+
+      <p><strong>Executive Summary:</strong> SOC failures are rarely caused by missing tools or broken ingestion. They happen when logic, schema, and execution reality drift apart. This project examined why enabled, healthy SIEM detections failed to trigger during a simulated Linux intrusion chain; and what it takes to fix that silence.</p>
+
+      <h2>Phase 1: Telemetry Validation</h2>
+      <p>Before testing detection logic, I verified the pipeline itself. The Elastic Agent was healthy, and endpoint telemetry was successfully ingested. Process execution (<code>whoami</code>) and network activity (<code>curl</code>) appeared in the <code>logs-endpoint.events.*</code> data stream.</p>
+      <p>Conclusion: the SIEM was not blind. The data existed.</p>
+
+      <h2>Phase 2: Attack Simulation</h2>
+      <p>I executed a basic post-exploitation workflow:</p>
+      <ul>
+        <li><strong>Identity:</strong> SSH authentication</li>
+        <li><strong>Discovery:</strong> <code>whoami</code> execution</li>
+        <li><strong>Network Activity:</strong> outbound <code>curl</code> request</li>
+      </ul>
+      <p>Each behavior occurred at the OS level and produced telemetry. Result: zero alerts.</p>
+
+      <h2>Phase 3: Root Cause Analysis</h2>
+      
+      <p><strong>1. Schema Mismatch:</strong> The SSH brute-force rule queried <code>system.auth</code>. An audit via Dev Tools showed the dataset never initialized. Logs existed, but not in the schema the rule assumed. Lesson: a detection rule is only as effective as the data model it relies on.</p>
+
+      <p><strong>2. Field Semantic Brittleness:</strong> One process-based rule expected a specific parent executable. Actual telemetry showed the shell interpreter instead. The detection failed not because the behavior was absent, but because OS execution semantics didn’t match the rule’s assumptions.</p>
+
+      <p><strong>3. Stateless Evaluation:</strong> Identity, process, and network telemetry existed, but remained siloed. Without state, time, or entity correlation, the SIEM evaluated each signal as low-fidelity noise. The system saw events but it did not understand behavior.</p>
+
+      <h2>Phase 4: Engineering the Fix · Stateful EQL</h2>
+      <p>To close the gap, I replaced point-in-time detections with a stateful EQL sequence. Instead of alerting on individual events, the rule correlates a temporal chain:</p>
+
+      <p><code>
+      sequence by host.name, user.name with maxspan=15m<br>
+      &nbsp; [authentication where event.outcome == "success"]<br>
+      &nbsp; [process where process.name == "whoami"]<br>
+      &nbsp; [network where destination.port == 80]
+      </code></p>
+
+      <p>By linking these events within a defined window, isolated noise becomes a coherent intrusion lifecycle.</p>
+
+      <hr />
+
+      <h2>Conclusion</h2>
+      <p>Detection coverage does not equal detection efficacy. Attacks unfold as stories, but most SIEMs still evaluate sentences in isolation. Until detections retain state across identity, process, and network telemetry, silence will continue to look like safety.</p>
+
+      <hr />
+
+      <section class="project-gallery">
+        <h2>Screenshots</h2>
+        <p class="muted">Click any image to zoom.</p>
+
+        <div class="img-grid">
+          <figure><img loading="lazy" src="/assets/project3/3.png" alt="Telemetry validation in Discover"></figure>
+          <figure><img loading="lazy" src="/assets/project3/4.png" alt="Dev Tools index audit"></figure>
+          <figure><img loading="lazy" src="/assets/project3/5.png" alt="Siloed telemetry analysis"></figure>
+          <figure><img loading="lazy" src="/assets/project3/6.png" alt="Root cause investigation"></figure>
+          <figure><img loading="lazy" src="/assets/project3/7.png" alt="Stateful EQL implementation"></figure>
+          <figure><img loading="lazy" src="/assets/project3/8.png" alt="Successful detection chain"></figure>
+        </div>
+      </section>
+
+      <p class="muted" style="margin-top:18px">
+        See the quick summary on Instagram <strong>@maria.cybersec</strong>.
+      </p>
+    </main>
+  </div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <span class="close" id="lbClose" aria-label="Close">×</span>
+    <img id="lbImg" alt="">
+  </div>
+
+  <script>
+    (function(){
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      const lbClose = document.getElementById('lbClose');
+      document.querySelectorAll('.img-grid img').forEach(img=>{
+        img.addEventListener('click',()=>{
+          lbImg.src = img.dataset.full || img.src;
+          lbImg.alt = img.alt || '';
+          lb.classList.add('open');
+          lb.setAttribute('aria-hidden','false');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+      function closeLB(){
+        lb.classList.remove('open');
+        lb.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+      }
+      lbClose.addEventListener('click', closeLB);
+      lb.addEventListener('click', e => { if (e.target === lb) closeLB(); });
+      window.addEventListener('keydown', e => { if (e.key === 'Escape') closeLB(); });
+    })();
+  </script>
+</body>
+</html>
