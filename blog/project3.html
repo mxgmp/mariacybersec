@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>The Silent SIEM: Why Data ≄ Detection</title>
-  <meta name="description" content="A Post-Mortem on Stateless Logic & Telemetry Gaps in Elastic SIEM.">
+  <meta name="description" content="A Post-Mortem on Stateless Logic, Schema Drift & Correlation Failure.">
   <style>
     :root{ --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32; }
     html,body{
@@ -63,6 +63,8 @@
       position:absolute; top:12px; right:16px; font-size:28px;
       color:#fff; cursor:pointer; line-height:1
     }
+    pre { background: #16161e; padding: 16px; border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; margin: 16px 0; }
+    code { font-family: "Source Code Pro", monospace; color: #7aa2f7; }
   </style>
 </head>
 <body>
@@ -74,47 +76,51 @@
     <main class="post">
       <h1>The Silent SIEM: Why Data ≄ Detection</h1>
 
-      <p><strong>A Post-Mortem on Stateless Logic & Telemetry Gaps</strong></p>
+      <p><strong>A Post-Mortem on Stateless Logic, Schema Drift & Correlation Failure</strong></p>
 
-      <p><strong>Executive Summary:</strong> SOC failures are rarely caused by missing tools or broken ingestion. They happen when logic, schema, and execution reality drift apart. This project examined why enabled, healthy SIEM detections failed to trigger during a simulated Linux intrusion chain; and what it takes to fix that silence.</p>
+      <p><strong>Executive Summary:</strong> SOC failures are rarely caused by missing tools or broken ingestion. More often, they happen when logic, schema, and execution reality drift apart. In this project, I investigated why enabled and “healthy” Elastic Security detections failed to trigger during a simulated Linux intrusion chain, despite telemetry being present. The outcome was a clear reminder of a core detection engineering truth: Data existing ≠ detection working.</p>
 
-      <h2>Phase 1: Telemetry Validation</h2>
-      <p>Before testing detection logic, I verified the pipeline itself. The Elastic Agent was healthy, and endpoint telemetry was successfully ingested. Process execution (<code>whoami</code>) and network activity (<code>curl</code>) appeared in the <code>logs-endpoint.events.*</code> data stream.</p>
+      <h2>Phase 1: Telemetry Validation (Is the pipeline blind?)</h2>
+      <p>Before testing detection logic, I validated ingestion end-to-end. Elastic Agent status: Healthy. Endpoint telemetry ingestion: Successful. Observed events included process execution (e.g., <code>whoami</code>) and outbound network activity (e.g., <code>curl</code>). Data was present in the <code>logs-endpoint.events.*</code> data stream.</p>
       <p>Conclusion: the SIEM was not blind. The data existed.</p>
 
-      <h2>Phase 2: Attack Simulation</h2>
-      <p>I executed a basic post-exploitation workflow:</p>
+      <h2>Phase 2: Attack Simulation (Does behavior produce signals?)</h2>
+      <p>I executed a basic post-exploitation workflow to simulate a small intrusion chain:</p>
       <ul>
         <li><strong>Identity:</strong> SSH authentication</li>
-        <li><strong>Discovery:</strong> <code>whoami</code> execution</li>
-        <li><strong>Network Activity:</strong> outbound <code>curl</code> request</li>
+        <li><strong>Discovery:</strong> execution of <code>whoami</code></li>
+        <li><strong>Network activity:</strong> outbound <code>curl</code> request</li>
       </ul>
-      <p>Each behavior occurred at the OS level and produced telemetry. Result: zero alerts.</p>
+      <p>Each behavior occurred at the OS level and produced telemetry. Result; zero alerts.</p>
 
-      <h2>Phase 3: Root Cause Analysis</h2>
+      <h2>Phase 3: Root Cause Analysis (Why the detections stayed silent)</h2>
       
-      <p><strong>1. Schema Mismatch:</strong> The SSH brute-force rule queried <code>system.auth</code>. A Dev Tools audit showed that the dataset never initialized; logs existed, but not in the schema the rule assumed. Lesson: a detection rule is only as effective as the data model it relies on.</p>
+      <p><strong>1) Schema Mismatch:</strong> The SSH brute-force rule queried <code>system.auth</code>. A Dev Tools audit showed that the dataset never initialized; logs existed, but not in the schema the rule assumed. Lesson: a detection rule is only as effective as the data model it relies on.</p>
 
-      <p><strong>2. Field Semantic Brittleness:</strong> One process-based rule expected a specific parent executable. Actual telemetry showed the shell interpreter instead. The detection failed not because the behavior was absent, but because OS execution semantics didn’t match the rule’s assumptions.</p>
+      <p><strong>2) Field Semantic Brittleness:</strong> One process-based detection expected a specific parent executable. However, actual telemetry reflected different execution semantics (the shell interpreter instead). The detection failed not because the behavior was absent, but because the rule’s assumptions didn’t match real OS execution behavior.</p>
 
-      <p><strong>3. Stateless Evaluation:</strong> Identity, process, and network telemetry existed, but remained siloed. Without state, time, or entity correlation, the SIEM evaluated each signal as low-fidelity noise. The system saw events, but it did not understand behavior.</p>
+      <p><strong>3) Stateless Evaluation:</strong> Identity, process, and network telemetry existed, but remained siloed. Without state, time correlation, or entity linking, the SIEM evaluated each signal as low-fidelity noise. The system saw events; but it did not understand behavior.</p>
 
-      <h2>Phase 4: Engineering the Fix · Stateful EQL</h2>
-      <p>To close the gap, I replaced point-in-time detections with a stateful EQL sequence. Instead of alerting on individual events, the rule correlates a temporal chain:</p>
+      <h2>Phase 4: Engineering the Fix (Stateful EQL Correlation)</h2>
+      <p>To close the gap, I attempted to replace point-in-time detections with a stateful EQL sequence. Instead of alerting on individual events, the goal was to correlate a temporal chain:</p>
 
-      <p><code>
-      sequence by host.name, user.name with maxspan=15m<br>
-      &nbsp; [authentication where event.outcome == "success"]<br>
-      &nbsp; [process where process.name == "whoami"]<br>
-      &nbsp; [network where destination.port == 80]
-      </code></p>
+<pre><code>EQL
+sequence by host.name, user.name with maxspan=15m
+  [authentication where event.outcome == "success"]
+  [process where process.name == "whoami"]
+  [network where destination.port == 80]
+</code></pre>
 
-      <p>By linking these events within a defined window, isolated noise becomes a coherent intrusion lifecycle.</p>
+      <p>The logic is straightforward: when the chain is linked, isolated noise becomes a coherent intrusion lifecycle.</p>
+
+      <h2>Phase 5: The Deeper Finding (Correlation still fails if the dataset is wrong)</h2>
+      <p>When I tested the sequence, the correlation did not produce alerts; not because the concept was flawed, but because the first stage of the chain could not match. The authentication events required by the sequence were not present in the expected dataset (<code>system.auth</code> never initialized). As a result, the sequence could not complete, even though later stages (process and network telemetry) were visible.</p>
+      <p>This reinforced a critical point: Stateful correlation improves detection, but it still depends on correct, validated telemetry. If a sequence relies on fields or datasets that don’t exist in the environment, correlation logic cannot compensate.</p>
 
       <hr />
 
       <h2>Conclusion</h2>
-      <p>Detection coverage does not equal detection efficacy. Attacks unfold as stories; but most SIEMs still evaluate sentences in isolation. Until detections retain state across identity, process, and network telemetry, silence will continue to look like safety.</p>
+      <p>Detection coverage does not equal detection efficacy. Attacks unfold as stories, but many SIEM detections still evaluate sentences in isolation; and sometimes, they evaluate the wrong book entirely. Until detections retain state across identity, endpoint, and network telemetry and teams validate that the underlying data model matches real execution, silence will continue to look like safety.</p>
 
       <hr />
 
