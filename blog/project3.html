@@ -93,11 +93,11 @@
 
       <h2>Phase 3: Root Cause Analysis</h2>
       
-      <p><strong>1. Schema Mismatch:</strong> The SSH brute-force rule queried <code>system.auth</code>. An audit via Dev Tools showed the dataset never initialized. Logs existed, but not in the schema the rule assumed. Lesson: a detection rule is only as effective as the data model it relies on.</p>
+      <p><strong>1. Schema Mismatch:</strong> The SSH brute-force rule queried <code>system.auth</code>. A Dev Tools audit showed that the dataset never initialized; logs existed, but not in the schema the rule assumed. Lesson: a detection rule is only as effective as the data model it relies on.</p>
 
       <p><strong>2. Field Semantic Brittleness:</strong> One process-based rule expected a specific parent executable. Actual telemetry showed the shell interpreter instead. The detection failed not because the behavior was absent, but because OS execution semantics didn’t match the rule’s assumptions.</p>
 
-      <p><strong>3. Stateless Evaluation:</strong> Identity, process, and network telemetry existed, but remained siloed. Without state, time, or entity correlation, the SIEM evaluated each signal as low-fidelity noise. The system saw events but it did not understand behavior.</p>
+      <p><strong>3. Stateless Evaluation:</strong> Identity, process, and network telemetry existed, but remained siloed. Without state, time, or entity correlation, the SIEM evaluated each signal as low-fidelity noise. The system saw events, but it did not understand behavior.</p>
 
       <h2>Phase 4: Engineering the Fix · Stateful EQL</h2>
       <p>To close the gap, I replaced point-in-time detections with a stateful EQL sequence. Instead of alerting on individual events, the rule correlates a temporal chain:</p>
@@ -114,7 +114,7 @@
       <hr />
 
       <h2>Conclusion</h2>
-      <p>Detection coverage does not equal detection efficacy. Attacks unfold as stories, but most SIEMs still evaluate sentences in isolation. Until detections retain state across identity, process, and network telemetry, silence will continue to look like safety.</p>
+      <p>Detection coverage does not equal detection efficacy. Attacks unfold as stories; but most SIEMs still evaluate sentences in isolation. Until detections retain state across identity, process, and network telemetry, silence will continue to look like safety.</p>
 
       <hr />
 
