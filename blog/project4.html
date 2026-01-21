@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SkyTrust: The Logic of Sensor Fusion</title>
+  <meta name="description" content="Why your SIEM needs a trust score and how sensor fusion fixes blind spots.">
+  <style>
+    :root{ --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32; }
+    html,body{
+      margin:0; padding:0; background:var(--bg); color:var(--fg);
+      font:15px/1.7 Helvetica, "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+    .container{ max-width:860px; margin:32px auto 80px; padding:0 16px; }
+
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    header{ padding:16px 0; }
+    .back{ font-size:14px; color:var(--muted); }
+
+    h1, h2, h3 {
+      font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #c9bbff;
+      margin-top: 32px;
+    }
+    p, li {
+      font-family: "Source Code Pro", "Courier New", monospace;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #d7d7e0;
+    }
+    ul{ margin:8px 0 16px 20px; }
+    hr{ border:0; border-top:1px solid var(--border); margin:40px 0; }
+
+    /* Inline Image Styling */
+    .inline-img {
+      width: 100%;
+      height: auto;
+      margin: 20px 0;
+      border-radius: 10px;
+      border: 1px solid rgba(196,181,253,.18);
+      box-shadow: 0 4px 15px rgba(0,0,0,.25);
+      cursor: zoom-in;
+    }
+    .caption {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: -10px;
+      margin-bottom: 25px;
+      display: block;
+    }
+
+    .lightbox{
+      position:fixed; inset:0; display:none; place-items:center;
+      background:rgba(0,0,0,.82); z-index:9999; padding:22px;
+    }
+    .lightbox.open{ display:grid }
+    .lightbox img{
+      max-width:min(1200px,92vw); max-height:86vh; border-radius:12px;
+      box-shadow:0 10px 40px rgba(0,0,0,.6);
+    }
+    .lightbox .close{
+      position:absolute; top:12px; right:16px; font-size:28px;
+      color:#fff; cursor:pointer; line-height:1
+    }
+    code { font-family: "Source Code Pro", monospace; color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a class="back" href="/" aria-label="Back to home">← mariacybersec</a>
+    </header>
+
+    <main class="post">
+      <h1>The Logic of Sensor Fusion (And Why Your SIEM Needs a Trust Score)</h1>
+
+      <h3>Executive Summary</h3>
+      <p>In high-stakes environments like skydiving, trusting a single data source can be risky. If your altimeter drifts and you don't notice, you lose your altitude awareness. In a SOC, the stakes are similar: if an attacker blinds a sensor or tampered with logs, single-source alert logic will fail silently.</p>
+      <p>Most detection rules evaluate one signal at a time: A login event, a process execution, or a network connection. But attackers don’t operate in single events; they operate in chains. In this project, I built a Python-based <strong>Trust Engine</strong> that uses sensor fusion to calculate real-time confidence scores across multiple telemetry sources with the objective of detecting not just what happened, but how reliable the data reporting it actually is.</p>
+
+      <hr />
+
+      <h2>Phase 1: The Skydive Scenario (Simulating Multi-Source Telemetry)</h2>
+      <p>I started by generating a realistic dataset representing a skydive with three telemetry streams:</p>
+      <ul>
+        <li><code>Altimeter</code>: Primary altitude sensor.</li>
+        <li><code>GPS</code>: Secondary altitude verification.</li>
+        <li><code>Accelerometer</code>: Motion/velocity validation.</li>
+      </ul>
+      <p>Then I injected three failure modes that mirror SOC blind spots: <strong>Slow Drift</strong> (Consistency), <strong>Sudden Spoofing</strong> (Integrity), and <strong>Signal Dropout</strong> (Availability).</p>
+      <p>Each of these happens in real SOC environments. The question is: can your detection system recognize when its own data sources are unreliable? The graph below shows what "telemetry under attack" actually looks like:</p>
+
+      <img src="/assets/project4/1.png" class="inline-img" alt="Sensors vs Ground Truth Graph">
+      <span class="caption">Artifact 1: Sensors vs Ground Truth Graph</span>
+
+      <hr />
+
+      <h2>Phase 2: Implementing Trust Scoring (EWMA & Robust Z-Scores)</h2>
+      <p>A common problem in both sensors and user behavior is <strong>Slow Drift</strong>; gradual deviation that doesn't trigger threshold-based alerts. Standard detections miss this because they evaluate single data points, not trends over time. To solve this, I implemented an <strong>Exponentially Weighted Moving Average (EWMA)</strong> to create a moving baseline. When the altimeter wandered, the engine calculated the residual and dropped the trust score.</p>
+      <p>To catch <strong>Spoofing</strong>, I used <strong>Robust Z-Scores</strong> based on <strong>Median Absolute Deviation (MAD)</strong>. Unlike a standard average, MAD isn't skewed by the attack itself. When the GPS signal jumped, the Z-score spiked, and the engine instantly flagged the data as untrustworthy.</p>
+
+      <p><strong>Here’s the core logic for the trust engine calculation:</strong></p>
+      
+      <img src="/assets/project4/3.png" class="inline-img" alt="Code Snippet of Engine Logic">
+      <span class="caption">Code Snippet: EWMA and Robust Z-Score Logic</span>
+
+      <img src="/assets/project4/2.png" class="inline-img" alt="Trust Score Degradation Graph">
+      <span class="caption">Artifact 2: Trust Score Degradation Graph</span>
+
+      <hr />
+
+      <h2>Phase 3: Weighted Correlation (The Verdict)</h2>
+      <p>I built a correlation layer that averages trust scores across all three sensors and set a security threshold at <strong>0.7</strong>. If the combined trust falls below this, the system triggers an <strong>UNSAFE STATE</strong>.</p>
+      <p>One anomaly is a fluke. Three simultaneous anomalies across Identity, Endpoint, and Network? That's an intrusion chain.</p>
+
+      <img src="/assets/project4/4.png" class="inline-img" alt="Terminal Screenshot Secure to Unsafe">
+      <span class="caption">Terminal Screenshot: The transition from SECURE to UNSAFE</span>
+
+      <img src="/assets/project4/5.png" class="inline-img" alt="Analysis Complete Summary">
+      <span class="caption">Analysis Complete: Final engine verdict and termination status</span>
+
+      <hr />
+
+      <h2>Conclusion: In a hostile environment, trust is a variable, not a constant.</h2>
+      <p>Building this engine reinforced a core principle: You cannot trust a single sensor in a hostile environment. Attackers don’t just exploit vulnerabilities; they blind the systems designed to detect them. Sensor fusion isn't just for aerospace, it's how mature SOCs evaluate the truth.</p>
+      <p>The final mission report shows the structured incident logging generated by the engine:</p>
+
+      <img src="/assets/project4/6.png" class="inline-img" alt="Final Status Table Screenshot">
+      <span class="caption">Final Status Table: Structured output for SIEM ingestion</span>
+
+      <p class="muted" style="margin-top:40px">
+        See the quick summary on Instagram <strong>@maria.cybersec</strong>.
+      </p>
+    </main>
+  </div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <span class="close" id="lbClose" aria-label="Close">×</span>
+    <img id="lbImg" alt="">
+  </div>
+
+  <script>
+    (function(){
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      const lbClose = document.getElementById('lbClose');
+      document.querySelectorAll('.inline-img').forEach(img=>{
+        img.addEventListener('click',()=>{
+          lbImg.src = img.src;
+          lbImg.alt = img.alt || '';
+          lb.classList.add('open');
+          lb.setAttribute('aria-hidden','false');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+      function closeLB(){
+        lb.classList.remove('open');
+        lb.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+      }
+      lbClose.addEventListener('click', closeLB);
+      lb.addEventListener('click', e => { if (e.target === lb) closeLB(); });
+      window.addEventListener('keydown', e => { if (e.key === 'Escape') closeLB(); });
+    })();
+  </script>
+</body>
+</html>
