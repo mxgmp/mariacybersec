@@ -7,8 +7,9 @@
   <meta name="description" content="Cybersecurity projects, detection engineering notes, and lab documentation." />
   <style>
     :root {
-      --bg:#000000; --card:#1a1a1a; --text:#ffffff; --muted:#ffffff;
+      --bg:#000000; --card:#2a2a2a; --text:#ffffff; --muted:#ffffff;
       --link:#c4b5fd; --accent:#b09cff;
+      --purple1:#a78bfa; --purple2:#c084fc; --purple3:#e879f9; --purple4:#f472b6;
     }
     *{box-sizing:border-box}
     html,body{
@@ -34,7 +35,6 @@
       display:block;
       background:var(--card);
       border:1px solid rgba(196,181,253,.15);
-      border-left:4px solid var(--accent);
       border-radius:10px;
       padding:18px 20px;
       color:#ffffff;
@@ -42,12 +42,19 @@
       transition:background .2s ease, transform .08s ease;
       box-shadow:0 2px 8px rgba(0,0,0,0.4);
     }
-    .project-item:hover{background:#242424;transform:translateY(-2px)}
+    .project-item:hover{background:#353535;transform:translateY(-2px)}
+    .project-item.accent1{border-left:4px solid var(--purple1)}
+    .project-item.accent2{border-left:4px solid var(--purple2)}
+    .project-item.accent3{border-left:4px solid var(--purple3)}
+    .project-item.accent4{border-left:4px solid var(--purple4)}
     .project-number{
-      color:var(--accent);
       font-weight:600;
       margin-right:8px;
     }
+    .project-item.accent1 .project-number{color:var(--purple1)}
+    .project-item.accent2 .project-number{color:var(--purple2)}
+    .project-item.accent3 .project-number{color:var(--purple3)}
+    .project-item.accent4 .project-number{color:var(--purple4)}
     .project-title{
       font-size:15px;
       font-family:"Source Code Pro","Courier New",monospace;
@@ -66,16 +73,16 @@
     <section>
       <h2>Projects</h2>
       <div class="projects-list">
-        <a class="project-item" href="/blog/project1.html">
+        <a class="project-item accent1" href="/blog/project1.html">
           <span class="project-number">1.</span><span class="project-title">Detecting Brute Force Attacks with Splunk</span>
         </a>
-        <a class="project-item" href="/blog/project2.html">
+        <a class="project-item accent2" href="/blog/project2.html">
           <span class="project-number">2.</span><span class="project-title">Detecting DNS Exfiltration with Wireshark</span>
         </a>
-        <a class="project-item" href="/blog/project3.html">
+        <a class="project-item accent3" href="/blog/project3.html">
           <span class="project-number">3.</span><span class="project-title">The Silent SIEM: Why Data ≄ Detection</span>
         </a>
-        <a class="project-item" href="/blog/project4.html">
+        <a class="project-item accent4" href="/blog/project4.html">
           <span class="project-number">4.</span><span class="project-title">The Logic of Sensor Fusion (And Why Your SIEM Needs a Trust Score)</span>
         </a>
       </div>
