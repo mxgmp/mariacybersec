@@ -7,7 +7,7 @@
   <meta name="description" content="Detecting DNS exfiltration with Wireshark: simulating normal and suspicious traffic, analyzing packet behavior, and spotting tunneling patterns.">
   <style>
     :root{ 
-      --bg:#000000; --fg:#ffffff; --muted:#9ca3af; 
+      --bg:#000000; --fg:#ffffff; --muted:#6b7280; 
       --accent:#c084fc; --card:#2a2a2a; --border:#2a2a2a; 
     }
     html,body{
@@ -36,17 +36,19 @@
       line-height: 1.6;
       color: #ffffff;
     }
+    .highlight { color: var(--accent); font-weight: 600; }
     code {
       background: var(--card);
       padding: 2px 6px;
       border-radius: 4px;
       font-family: "Source Code Pro", "Courier New", monospace;
+      color: var(--accent);
     }
     ul{ margin:8px 0 16px 20px; }
-    hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
+    hr{ border:0; border-top:1px solid var(--border); margin:40px 0; }
 
     /* gallery + lightbox */
-    .muted{ color:var(--muted); }
+    .muted-text{ color:var(--muted); }
     .project-gallery{ margin-top:28px }
     .project-gallery h2{ color:var(--muted); margin-bottom:6px }
     .img-grid{
@@ -87,36 +89,46 @@
     <main class="post">
       <h1>Detecting DNS Exfiltration with Wireshark</h1>
 
-      <p>DNS tunneling is how attackers exfiltrate data through DNS queries that look normal. In this mini lab, I simulated both normal and suspicious DNS traffic using Python + Scapy, then analyzed packet behavior in Wireshark to detect signs of data exfiltration.</p>
+      <p><span class="highlight">DNS tunneling</span> is how attackers exfiltrate data through DNS queries that look normal. In this mini lab, I simulated both normal and suspicious DNS traffic using <span class="highlight">Python + Scapy</span>, then analyzed packet behavior in Wireshark to detect signs of data exfiltration.</p>
 
-      <p>This is the part 2 of my hands-on network forensics series, which is focused on identifying unusual DNS patterns that could indicate tunneling or data leaks.</p>
+      <p>This is the part 2 of my hands-on network forensics series, which is focused on identifying unusual DNS patterns that could indicate <span class="highlight">tunneling or data leaks</span>.</p>
 
-      <h2>Step 1: Generate Simulated DNS Traffic</h2>
-      <p>I wrote a short Python script using <code>Scapy</code> to generate a <code>.pcap</code> file containing both normal DNS queries and suspicious, high entropy subdomains that mimic exfiltration behavior. The file was then exported for Wireshark analysis.</p>
+      <hr />
 
-      <h2>Step 2: Analyze the PCAP in Wireshark</h2>
+      <h2>1: Generate Simulated DNS Traffic</h2>
+      <p>I wrote a short Python script using <code>Scapy</code> to generate a <code>.pcap</code> file containing both <span class="highlight">normal DNS queries</span> and suspicious, <span class="highlight">high entropy subdomains</span> that mimic exfiltration behavior. The file was then exported for Wireshark analysis.</p>
+
+      <hr />
+
+      <h2>2: Analyze the PCAP in Wireshark</h2>
       <p>Opening the <code>project2_dns_tunnel.pcap</code> file, I inspected DNS packets and compared legitimate queries (<code>google.com</code>, <code>github.com</code>, etc.) with the generated suspicious traffic (<code>*.exfil.example</code>).</p>
 
-      <h2>Step 3: Observe Normal DNS Queries</h2>
-      <p>Normal traffic showed low entropy, human readable domain names and proper DNS responses. These packets represented standard user-initiated lookups.</p>
+      <hr />
 
-      <h2>Step 4: Identify Suspicious Patterns</h2>
-      <p>Suspicious traffic showed unusually long subdomains filled with random characters; a common indicator of DNS tunneling. Many queries had no responses or incomplete exchanges, which suggests abnormal activity.</p>
+      <h2>3: Observe Normal DNS Queries</h2>
+      <p>Normal traffic showed <span class="highlight">low entropy</span>, human readable domain names and proper DNS responses. These packets represented standard user-initiated lookups.</p>
 
-      <h2>Step 5: Compare Entropy & Behavior</h2>
-      <p>By visually comparing both patterns, I confirmed how tunneled data often looks chaotic compared to ordinary DNS traffic. Even without automation, this manual inspection highlights how analysts can spot covert channels.</p>
+      <hr />
+
+      <h2>4: Identify Suspicious Patterns</h2>
+      <p>Suspicious traffic showed <span class="highlight">unusually long subdomains</span> filled with random characters; a common indicator of DNS tunneling. Many queries had <span class="highlight">no responses</span> or incomplete exchanges, which suggests abnormal activity.</p>
+
+      <hr />
+
+      <h2>5: Compare Entropy & Behavior</h2>
+      <p>By visually comparing both patterns, I confirmed how <span class="highlight">tunneled data</span> often looks chaotic compared to ordinary DNS traffic. Even without automation, this manual inspection highlights how analysts can spot covert channels.</p>
 
       <hr />
 
       <h2>Conclusion</h2>
-      <p>This lab deepened my understanding of how exfiltration can hide within legitimate protocols. Hands-on traffic simulation and analysis gave me a clear picture of how DNS tunneling operates and how to identify it visually in Wireshark.</p>
+      <p>This lab deepened my understanding of how <span class="highlight">exfiltration can hide within legitimate protocols</span>. Hands-on traffic simulation and analysis gave me a clear picture of how DNS tunneling operates and how to identify it visually in Wireshark.</p>
 
       <hr />
 
       <!-- === Screenshot gallery (no captions) === -->
       <section class="project-gallery">
         <h2>Screenshots</h2>
-        <p class="muted">Click any image to zoom.</p>
+        <p class="muted-text">Click any image to zoom.</p>
 
         <div class="img-grid">
           <figure><img loading="lazy" src="/assets/project2/IMG_5410.jpeg" alt="DNS simulation overview and PCAP ready"></figure>
@@ -128,7 +140,7 @@
         </div>
       </section>
 
-      <p class="muted" style="margin-top:18px">
+      <p class="muted-text" style="margin-top:18px">
         See the quick summary on Instagram <strong>@maria.cybersec</strong>.
       </p>
     </main>
