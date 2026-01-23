@@ -7,7 +7,7 @@
   <meta name="description" content="Why your SIEM needs a trust score and how sensor fusion fixes blind spots.">
   <style>
     :root{ 
-      --bg:#000000; --fg:#ffffff; --muted:#9ca3af; 
+      --bg:#000000; --fg:#ffffff; --muted:#6b7280; 
       --accent:#f472b6; --card:#2a2a2a; --border:#2a2a2a; 
     }
     html,body{
@@ -38,6 +38,7 @@
       line-height: 1.6;
       color: #ffffff;
     }
+    .highlight { color: var(--accent); font-weight: 600; }
     code { 
       background: var(--card);
       padding: 2px 6px;
@@ -96,20 +97,19 @@
     <main class="post">
       <h1>The Logic of Sensor Fusion (And Why Your SIEM Needs a Trust Score)</h1>
 
-      <h3>Executive Summary</h3>
       <p>In high-stakes environments like skydiving, trusting a single data source can be risky. If your altimeter drifts and you don't notice, you lose your altitude awareness. In a SOC, the stakes are similar: if an attacker blinds a sensor or tampered with logs, single-source alert logic will fail silently.</p>
-      <p>Most detection rules evaluate one signal at a time: A login event, a process execution, or a network connection. But attackers don't operate in single events; they operate in chains. In this project, I built a Python-based <strong>Trust Engine</strong> that uses sensor fusion to calculate real-time confidence scores across multiple telemetry sources with the objective of detecting not just what happened, but how reliable the data reporting it actually is.</p>
+      <p>Most detection rules evaluate one signal at a time: A login event, a process execution, or a network connection. But attackers don't operate in single events; they operate in chains. In this project, I built a Python-based <span class="highlight">Trust Engine</span> that uses sensor fusion to calculate real-time confidence scores across multiple telemetry sources with the objective of detecting not just what happened, but how reliable the data reporting it actually is.</p>
 
       <hr />
 
-      <h2>Phase 1: The Skydive Scenario (Simulating Multi-Source Telemetry)</h2>
+      <h2>1: The Skydive Scenario (Simulating Multi-Source Telemetry)</h2>
       <p>I started by generating a realistic dataset representing a skydive with three telemetry streams:</p>
       <ul>
-        <li><code>Altimeter</code>: Primary altitude sensor.</li>
-        <li><code>GPS</code>: Secondary altitude verification.</li>
-        <li><code>Accelerometer</code>: Motion/velocity validation.</li>
+        <li><span class="highlight">Altimeter:</span> Primary altitude sensor.</li>
+        <li><span class="highlight">GPS:</span> Secondary altitude verification.</li>
+        <li><span class="highlight">Accelerometer:</span> Motion/velocity validation.</li>
       </ul>
-      <p>Then I injected three failure modes that mirror SOC blind spots: <strong>Slow Drift</strong> (Consistency), <strong>Sudden Spoofing</strong> (Integrity), and <strong>Signal Dropout</strong> (Availability).</p>
+      <p>Then I injected three failure modes that mirror SOC blind spots: <span class="highlight">Slow Drift</span> (Consistency), <span class="highlight">Sudden Spoofing</span> (Integrity), and <span class="highlight">Signal Dropout</span> (Availability).</p>
       <p>Each of these happens in real SOC environments. The question is: can your detection system recognize when its own data sources are unreliable? The graph below shows what "telemetry under attack" actually looks like:</p>
 
       <img src="/assets/project4/1.png" class="inline-img" alt="Sensors vs Ground Truth Graph">
@@ -117,9 +117,9 @@
 
       <hr />
 
-      <h2>Phase 2: Implementing Trust Scoring (EWMA & Robust Z-Scores)</h2>
-      <p>A common problem in both sensors and user behavior is <strong>Slow Drift</strong>; gradual deviation that doesn't trigger threshold-based alerts. Standard detections miss this because they evaluate single data points, not trends over time. To solve this, I implemented an <strong>Exponentially Weighted Moving Average (EWMA)</strong> to create a moving baseline. When the altimeter wandered, the engine calculated the residual and dropped the trust score.</p>
-      <p>To catch <strong>Spoofing</strong>, I used <strong>Robust Z-Scores</strong> based on <strong>Median Absolute Deviation (MAD)</strong>. Unlike a standard average, MAD isn't skewed by the attack itself. When the GPS signal jumped, the Z-score spiked, and the engine instantly flagged the data as untrustworthy.</p>
+      <h2>2: Implementing Trust Scoring (EWMA & Robust Z-Scores)</h2>
+      <p>A common problem in both sensors and user behavior is <span class="highlight">Slow Drift</span>; gradual deviation that doesn't trigger threshold-based alerts. Standard detections miss this because they evaluate single data points, not trends over time. To solve this, I implemented an <span class="highlight">Exponentially Weighted Moving Average (EWMA)</span> to create a moving baseline. When the altimeter wandered, the engine calculated the residual and dropped the trust score.</p>
+      <p>To catch <span class="highlight">Spoofing</span>, I used <span class="highlight">Robust Z-Scores</span> based on <span class="highlight">Median Absolute Deviation (MAD)</span>. Unlike a standard average, MAD isn't skewed by the attack itself. When the GPS signal jumped, the Z-score spiked, and the engine instantly flagged the data as untrustworthy.</p>
 
       <p><strong>Here's the core logic for the trust engine calculation:</strong></p>
       
@@ -131,8 +131,8 @@
 
       <hr />
 
-      <h2>Phase 3: Weighted Correlation (The Verdict)</h2>
-      <p>I built a correlation layer that averages trust scores across all three sensors and set a security threshold at <strong>0.7</strong>. If the combined trust falls below this, the system triggers an <strong>UNSAFE STATE</strong>.</p>
+      <h2>3: Weighted Correlation (The Verdict)</h2>
+      <p>I built a correlation layer that averages trust scores across all three sensors and set a security threshold at <span class="highlight">0.7</span>. If the combined trust falls below this, the system triggers an <span class="highlight">UNSAFE STATE</span>.</p>
       <p>One anomaly is a fluke. Three simultaneous anomalies across Identity, Endpoint, and Network? That's an intrusion chain.</p>
 
       <img src="/assets/project4/4.png" class="inline-img" alt="Terminal Screenshot Secure to Unsafe">
@@ -144,13 +144,13 @@
       <hr />
 
       <h2>Conclusion: In a hostile environment, trust is a variable, not a constant.</h2>
-      <p>Building this engine reinforced a core principle: You cannot trust a single sensor in a hostile environment. Attackers don't just exploit vulnerabilities; they blind the systems designed to detect them. Sensor fusion isn't just for aerospace, it's how mature SOCs evaluate the truth.</p>
+      <p>Building this engine reinforced a core principle: <span class="highlight">You cannot trust a single sensor in a hostile environment.</span> Attackers don't just exploit vulnerabilities; they blind the systems designed to detect them. Sensor fusion isn't just for aerospace, it's how mature SOCs evaluate the truth.</p>
       <p>The final mission report shows the structured incident logging generated by the engine:</p>
 
       <img src="/assets/project4/6.png" class="inline-img" alt="Final Status Table Screenshot">
       <span class="caption">Final Status Table: Structured output for SIEM ingestion</span>
 
-      <p class="muted" style="margin-top:40px">
+      <p style="margin-top:40px; color: var(--muted);">
         See the quick summary on Instagram <strong>@maria.cybersec</strong>.
       </p>
     </main>
