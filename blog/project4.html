@@ -6,7 +6,10 @@
   <title>SkyTrust: The Logic of Sensor Fusion</title>
   <meta name="description" content="Why your SIEM needs a trust score and how sensor fusion fixes blind spots.">
   <style>
-    :root{ --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32; }
+    :root{ 
+      --bg:#000000; --fg:#ffffff; --muted:#9ca3af; 
+      --accent:#f472b6; --card:#2a2a2a; --border:#2a2a2a; 
+    }
     html,body{
       margin:0; padding:0; background:var(--bg); color:var(--fg);
       font:15px/1.7 Helvetica, "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -19,16 +22,28 @@
     header{ padding:16px 0; }
     .back{ font-size:14px; color:var(--muted); }
 
-    h1, h2, h3 {
+    h1 {
       font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
-      color: #c9bbff;
+      color: var(--accent);
+      margin-top: 32px;
+    }
+    h2, h3 {
+      font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: var(--muted);
       margin-top: 32px;
     }
     p, li {
       font-family: "Source Code Pro", "Courier New", monospace;
       font-size: 15px;
       line-height: 1.6;
-      color: #d7d7e0;
+      color: #ffffff;
+    }
+    code { 
+      background: var(--card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "Source Code Pro", monospace; 
+      color: var(--accent); 
     }
     ul{ margin:8px 0 16px 20px; }
     hr{ border:0; border-top:1px solid var(--border); margin:40px 0; }
@@ -39,9 +54,14 @@
       height: auto;
       margin: 20px 0;
       border-radius: 10px;
-      border: 1px solid rgba(196,181,253,.18);
+      border: 1px solid rgba(244,114,182,.25);
       box-shadow: 0 4px 15px rgba(0,0,0,.25);
       cursor: zoom-in;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .inline-img:hover { 
+      transform: scale(1.02); 
+      box-shadow: 0 8px 28px rgba(244,114,182,.4);
     }
     .caption {
       font-size: 13px;
@@ -65,7 +85,6 @@
       position:absolute; top:12px; right:16px; font-size:28px;
       color:#fff; cursor:pointer; line-height:1
     }
-    code { font-family: "Source Code Pro", monospace; color: var(--accent); }
   </style>
 </head>
 <body>
@@ -79,7 +98,7 @@
 
       <h3>Executive Summary</h3>
       <p>In high-stakes environments like skydiving, trusting a single data source can be risky. If your altimeter drifts and you don't notice, you lose your altitude awareness. In a SOC, the stakes are similar: if an attacker blinds a sensor or tampered with logs, single-source alert logic will fail silently.</p>
-      <p>Most detection rules evaluate one signal at a time: A login event, a process execution, or a network connection. But attackers don’t operate in single events; they operate in chains. In this project, I built a Python-based <strong>Trust Engine</strong> that uses sensor fusion to calculate real-time confidence scores across multiple telemetry sources with the objective of detecting not just what happened, but how reliable the data reporting it actually is.</p>
+      <p>Most detection rules evaluate one signal at a time: A login event, a process execution, or a network connection. But attackers don't operate in single events; they operate in chains. In this project, I built a Python-based <strong>Trust Engine</strong> that uses sensor fusion to calculate real-time confidence scores across multiple telemetry sources with the objective of detecting not just what happened, but how reliable the data reporting it actually is.</p>
 
       <hr />
 
@@ -102,7 +121,7 @@
       <p>A common problem in both sensors and user behavior is <strong>Slow Drift</strong>; gradual deviation that doesn't trigger threshold-based alerts. Standard detections miss this because they evaluate single data points, not trends over time. To solve this, I implemented an <strong>Exponentially Weighted Moving Average (EWMA)</strong> to create a moving baseline. When the altimeter wandered, the engine calculated the residual and dropped the trust score.</p>
       <p>To catch <strong>Spoofing</strong>, I used <strong>Robust Z-Scores</strong> based on <strong>Median Absolute Deviation (MAD)</strong>. Unlike a standard average, MAD isn't skewed by the attack itself. When the GPS signal jumped, the Z-score spiked, and the engine instantly flagged the data as untrustworthy.</p>
 
-      <p><strong>Here’s the core logic for the trust engine calculation:</strong></p>
+      <p><strong>Here's the core logic for the trust engine calculation:</strong></p>
       
       <img src="/assets/project4/3.png" class="inline-img" alt="Code Snippet of Engine Logic">
       <span class="caption">Code Snippet: EWMA and Robust Z-Score Logic</span>
@@ -125,7 +144,7 @@
       <hr />
 
       <h2>Conclusion: In a hostile environment, trust is a variable, not a constant.</h2>
-      <p>Building this engine reinforced a core principle: You cannot trust a single sensor in a hostile environment. Attackers don’t just exploit vulnerabilities; they blind the systems designed to detect them. Sensor fusion isn't just for aerospace, it's how mature SOCs evaluate the truth.</p>
+      <p>Building this engine reinforced a core principle: You cannot trust a single sensor in a hostile environment. Attackers don't just exploit vulnerabilities; they blind the systems designed to detect them. Sensor fusion isn't just for aerospace, it's how mature SOCs evaluate the truth.</p>
       <p>The final mission report shows the structured incident logging generated by the engine:</p>
 
       <img src="/assets/project4/6.png" class="inline-img" alt="Final Status Table Screenshot">
