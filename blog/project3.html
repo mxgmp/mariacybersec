@@ -45,7 +45,7 @@
       color: var(--accent);
     }
     pre { 
-      background: #4a4a4a;
+      background: #3a3a3a;
       padding: 16px; 
       border-radius: 8px; 
       border: 1px solid var(--border); 
@@ -63,7 +63,7 @@
       font-weight: 500;
     }
     ul{ margin:8px 0 16px 20px; }
-    hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
+    hr{ border:0; border-top:1px solid var(--border); margin:40px 0; }
 
     /* gallery + lightbox */
     .muted-text{ color:var(--muted); }
@@ -111,9 +111,13 @@
 
       <p>SOC failures are rarely caused by missing tools or broken ingestion. More often, they happen when logic, schema, and execution reality drift apart. In this project, I investigated why enabled and "healthy" Elastic Security detections failed to trigger during a simulated Linux intrusion chain, despite telemetry being present. The outcome was a clear reminder of a core detection engineering truth: <span class="highlight">Data existing ≠ detection working.</span></p>
 
+      <hr />
+
       <h2>1: Telemetry Validation (Is the pipeline blind?)</h2>
       <p>Before testing detection logic, I validated ingestion end-to-end. Elastic Agent status: <span class="highlight">Healthy</span>. Endpoint telemetry ingestion: <span class="highlight">Successful</span>. Observed events included process execution (e.g., <code>whoami</code>) and outbound network activity (e.g., <code>curl</code>). Data was present in the <code>logs-endpoint.events.*</code> data stream.</p>
       <p>Conclusion: the SIEM was not blind. The data existed.</p>
+
+      <hr />
 
       <h2>2: Attack Simulation (Does behavior produce signals?)</h2>
       <p>I executed a basic post-exploitation workflow to simulate a small intrusion chain:</p>
@@ -124,6 +128,8 @@
       </ul>
       <p>Each behavior occurred at the OS level and produced telemetry. Result; zero alerts.</p>
 
+      <hr />
+
       <h2>3: Root Cause Analysis (Why the detections stayed silent)</h2>
       
       <p><span class="highlight">1) Schema Mismatch:</span> The SSH brute-force rule queried <code>system.auth</code>. A Dev Tools audit showed that the dataset never initialized; logs existed, but not in the schema the rule assumed. Lesson: a detection rule is only as effective as the data model it relies on.</p>
@@ -131,6 +137,8 @@
       <p><span class="highlight">2) Field Semantic Brittleness:</span> One process-based detection expected a specific parent executable. However, actual telemetry reflected different execution semantics (the shell interpreter instead). The detection failed not because the behavior was absent, but because the rule's assumptions didn't match real OS execution behavior.</p>
 
       <p><span class="highlight">3) Stateless Evaluation:</span> Identity, process, and network telemetry existed, but remained siloed. Without state, time correlation, or entity linking, the SIEM evaluated each signal as low-fidelity noise. The system saw events; but it did not understand behavior.</p>
+
+      <hr />
 
       <h2>4: Engineering the Fix (Stateful EQL Correlation)</h2>
       <p>To close the gap, I attempted to replace point-in-time detections with a stateful <span class="highlight">EQL sequence</span>. Instead of alerting on individual events, the goal was to correlate a temporal chain:</p>
@@ -142,6 +150,8 @@
   [network where destination.port == 80]</code></pre>
 
       <p>The logic is straightforward: when the chain is linked, isolated noise becomes a coherent intrusion lifecycle.</p>
+
+      <hr />
 
       <h2>5: The Deeper Finding (Correlation still fails if the dataset is wrong)</h2>
       <p>When I tested the sequence, the correlation did not produce alerts; not because the concept was flawed, but because the first stage of the chain could not match. The authentication events required by the sequence were not present in the expected dataset (<code>system.auth</code> never initialized). As a result, the sequence could not complete, even though later stages (process and network telemetry) were visible.</p>
