@@ -6,7 +6,10 @@
   <title>Project 2 — Detecting DNS Exfiltration with Wireshark</title>
   <meta name="description" content="Detecting DNS exfiltration with Wireshark: simulating normal and suspicious traffic, analyzing packet behavior, and spotting tunneling patterns.">
   <style>
-    :root{ --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32; }
+    :root{ 
+      --bg:#000000; --fg:#ffffff; --muted:#9ca3af; 
+      --accent:#c084fc; --card:#2a2a2a; --border:#2a2a2a; 
+    }
     html,body{
       margin:0; padding:0; background:var(--bg); color:var(--fg);
       font:15px/1.7 Helvetica, "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -19,15 +22,25 @@
     header{ padding:16px 0; }
     .back{ font-size:14px; color:var(--muted); }
 
-    h1, h2 {
+    h1 {
       font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
-      color: #c9bbff;
+      color: var(--accent);
+    }
+    h2 {
+      font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: var(--muted);
     }
     p, li {
       font-family: "Source Code Pro", "Courier New", monospace;
       font-size: 15px;
       line-height: 1.6;
-      color: #d7d7e0;
+      color: #ffffff;
+    }
+    code {
+      background: var(--card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "Source Code Pro", "Courier New", monospace;
     }
     ul{ margin:8px 0 16px 20px; }
     hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
@@ -35,7 +48,7 @@
     /* gallery + lightbox */
     .muted{ color:var(--muted); }
     .project-gallery{ margin-top:28px }
-    .project-gallery h2{ color:var(--accent); margin-bottom:6px }
+    .project-gallery h2{ color:var(--muted); margin-bottom:6px }
     .img-grid{
       display:grid;
       grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
@@ -44,11 +57,11 @@
     .img-grid figure{ margin:0 }
     .img-grid img{
       width:100%; height:auto; display:block; border-radius:10px;
-      border:1px solid rgba(196,181,253,.18);
+      border:1px solid rgba(192,132,252,.25);
       box-shadow:0 4px 15px rgba(0,0,0,.25);
       cursor:zoom-in; transition:transform .2s ease, box-shadow .2s ease;
     }
-    .img-grid img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(0,0,0,.45) }
+    .img-grid img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(192,132,252,.4) }
 
     .lightbox{
       position:fixed; inset:0; display:none; place-items:center;
