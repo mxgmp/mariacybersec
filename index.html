@@ -7,7 +7,7 @@
   <meta name="description" content="Cybersecurity projects, detection engineering notes, and lab documentation." />
   <style>
     :root {
-      --bg:#0b0d12; --card:#121320; --text:#e9e9ef; --muted:#a3a7b3;
+      --bg:#000000; --card:#1a1a1a; --text:#ffffff; --muted:#ffffff;
       --link:#c4b5fd; --accent:#b09cff;
     }
     *{box-sizing:border-box}
@@ -25,7 +25,7 @@
       background:linear-gradient(90deg,var(--link),var(--accent));
       -webkit-background-clip:text;background-clip:text;color:transparent
     }
-    h2{font-size:18px;margin:28px 0 12px;color:var(--muted);letter-spacing:.06em}
+    h2{font-size:18px;margin:28px 0 12px;color:var(--accent);letter-spacing:.06em}
     a{color:var(--link);text-decoration:none}
     a:hover{color:#c3d5ff}
     .muted-subheader{color:var(--muted);font-size:14px;letter-spacing:.02em}
@@ -33,27 +33,25 @@
     .project-item{
       display:block;
       background:var(--card);
-      border:1px solid rgba(196,181,253,.22);
+      border:1px solid rgba(196,181,253,.15);
       border-left:4px solid var(--accent);
       border-radius:10px;
       padding:18px 20px;
-      color:#e9e9ef;
+      color:#ffffff;
       font-size:15px;
       transition:background .2s ease, transform .08s ease;
-      box-shadow:0 2px 8px rgba(0,0,0,0.25);
+      box-shadow:0 2px 8px rgba(0,0,0,0.4);
     }
-    .project-item:hover{background:#171825;transform:translateY(-2px)}
-    .project-badge{
-      display:block;
-      font-weight:600;
-      font-size:14px;
+    .project-item:hover{background:#242424;transform:translateY(-2px)}
+    .project-number{
       color:var(--accent);
-      margin-bottom:4px;
-      font-family:"Avenir Next",Avenir,Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif
+      font-weight:600;
+      margin-right:8px;
     }
     .project-title{
       font-size:15px;
       font-family:"Source Code Pro","Courier New",monospace;
+      color:#ffffff;
     }
     .podcast-section{margin-top:48px}
     .podcast-description{color:var(--muted);font-size:14px;margin:8px 0 16px;line-height:1.5}
@@ -69,20 +67,16 @@
       <h2>Projects</h2>
       <div class="projects-list">
         <a class="project-item" href="/blog/project1.html">
-          <span class="project-badge">Project 1</span>
-          <span class="project-title">Detecting Brute Force Attacks with Splunk</span>
+          <span class="project-number">1.</span><span class="project-title">Detecting Brute Force Attacks with Splunk</span>
         </a>
         <a class="project-item" href="/blog/project2.html">
-          <span class="project-badge">Project 2</span>
-          <span class="project-title">Detecting DNS Exfiltration with Wireshark</span>
+          <span class="project-number">2.</span><span class="project-title">Detecting DNS Exfiltration with Wireshark</span>
         </a>
         <a class="project-item" href="/blog/project3.html">
-          <span class="project-badge">Project 3</span>
-          <span class="project-title">The Silent SIEM: Why Data ≄ Detection</span>
+          <span class="project-number">3.</span><span class="project-title">The Silent SIEM: Why Data ≄ Detection</span>
         </a>
         <a class="project-item" href="/blog/project4.html">
-          <span class="project-badge">Project 4</span>
-          <span class="project-title">The Logic of Sensor Fusion (And Why Your SIEM Needs a Trust Score)</span>
+          <span class="project-number">4.</span><span class="project-title">The Logic of Sensor Fusion (And Why Your SIEM Needs a Trust Score)</span>
         </a>
       </div>
     </section>
