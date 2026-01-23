@@ -6,7 +6,10 @@
   <title>Project 1 — Detecting Brute Force Attacks with Splunk</title>
   <meta name="description" content="Detecting brute force attacks with Splunk: data ingest, searches, alerting, and dashboarding.">
   <style>
-    :root{ --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32; }
+    :root{ 
+      --bg:#000000; --fg:#ffffff; --muted:#e5e5e5; 
+      --accent:#a78bfa; --card:#2a2a2a; --border:#2a2a2a; 
+    }
     html,body{
       margin:0; padding:0; background:var(--bg); color:var(--fg);
       font:15px/1.7 Helvetica, "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -21,13 +24,19 @@
 
     h1, h2 {
       font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
-      color: #c9bbff;
+      color: var(--muted);
     }
     p, li {
       font-family: "Source Code Pro", "Courier New", monospace;
       font-size: 15px;
       line-height: 1.6;
-      color: #d7d7e0;
+      color: #ffffff;
+    }
+    code {
+      background: var(--card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "Source Code Pro", "Courier New", monospace;
     }
     ul{ margin:8px 0 16px 20px; }
     hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
@@ -35,7 +44,7 @@
     /* Gallery + Lightbox (no captions) */
     .muted{ color:var(--muted); }
     .project-gallery{ margin-top:28px }
-    .project-gallery h2{ color:var(--accent); margin-bottom:6px }
+    .project-gallery h2{ color:var(--muted); margin-bottom:6px }
     .img-grid{
       display:grid;
       grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
@@ -44,11 +53,11 @@
     .img-grid figure{ margin:0 }
     .img-grid img{
       width:100%; height:auto; display:block; border-radius:10px;
-      border:1px solid rgba(196,181,253,.18);
+      border:1px solid rgba(167,139,250,.25);
       box-shadow:0 4px 15px rgba(0,0,0,.25);
       cursor:zoom-in; transition:transform .2s ease, box-shadow .2s ease;
     }
-    .img-grid img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(0,0,0,.45) }
+    .img-grid img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(167,139,250,.4) }
 
     .lightbox{
       position:fixed; inset:0; display:none; place-items:center;
@@ -74,16 +83,16 @@
     <main class="post">
       <h1>Detecting Brute Force Attacks with Splunk</h1>
 
-      <p>Brute force attacks aren’t just random password guesses. They are high-volume authentication failures that leave a clear trail in system logs. In this project, I built a Splunk detection workflow to identify brute force activity, create automated alerts, and visualise the results in a dashboard.</p>
+      <p>Brute force attacks aren't just random password guesses. They are high-volume authentication failures that leave a clear trail in system logs. In this project, I built a Splunk detection workflow to identify brute force activity, create automated alerts, and visualise the results in a dashboard.</p>
 
-      <p>This was my first hands-on Splunk project, and here’s how I did it step by step:</p>
+      <p>This was my first hands-on Splunk project, and here's how I did it step by step:</p>
 
       <h2>Step 1: Ingest Authentication Logs</h2>
-      <p>Before we can detect anything, Splunk needs the right data, so I ingested Linux authentication logs (<code>linux_auth_demo</code>) into a dedicated index called “lab”.</p>
+      <p>Before we can detect anything, Splunk needs the right data, so I ingested Linux authentication logs (<code>linux_auth_demo</code>) into a dedicated index called "lab".</p>
       <p>I kept all test logs inside the lab index to avoid mixing them with production or default Splunk data.</p>
 
       <h2>Step 2: Search for Failed Logins</h2>
-      <p>The raw logs contain both successful and failed login attempts. To isolate brute force behaviour, I searched for events with the keyword “Failed password”.</p>
+      <p>The raw logs contain both successful and failed login attempts. To isolate brute force behaviour, I searched for events with the keyword "Failed password".</p>
       <p>This gave me individual failed login attempts, but brute force detection requires grouping them.</p>
 
       <h2>Step 3: Identify Suspicious Spikes</h2>
@@ -95,7 +104,7 @@
       <ul>
         <li><strong>Type:</strong> Real-time</li>
         <li><strong>Trigger:</strong> If failed login attempts exceed a threshold (for example: 5 in 5 minutes)</li>
-        <li><strong>Throttle:</strong> By source IP (so we don’t get spammed)</li>
+        <li><strong>Throttle:</strong> By source IP (so we don't get spammed)</li>
         <li><strong>Severity:</strong> High</li>
       </ul>
       <p>This ensures analysts are notified only when brute force activity truly looks suspicious, not just from a user typing a password once by mistake.</p>
