@@ -29,7 +29,6 @@
     a{color:var(--link);text-decoration:none}
     a:hover{color:#c3d5ff}
     .muted-subheader{color:var(--muted);font-size:14px;letter-spacing:.02em}
-
     .projects-list{display:flex;flex-direction:column;gap:16px;margin-top:8px}
     .project-item{
       display:block;
@@ -56,6 +55,8 @@
       font-size:15px;
       font-family:"Source Code Pro","Courier New",monospace;
     }
+    .podcast-section{margin-top:48px}
+    .podcast-description{color:var(--muted);font-size:14px;margin:8px 0 16px;line-height:1.5}
   </style>
 </head>
 <body>
@@ -64,33 +65,33 @@
       <h1><span class="brand-accent">mariacybersec</span></h1>
       <div class="muted-subheader">Hands-on labs • Detection engineering • Adversary emulation</div>
     </header>
-
     <section>
-  <h2>Projects</h2>
-  <div class="projects-list">
-
-    <a class="project-item" href="/blog/project1.html">
-      <span class="project-badge">Project 1</span>
-      <span class="project-title">Detecting Brute Force Attacks with Splunk</span>
-    </a>
-
-    <a class="project-item" href="/blog/project2.html">
-      <span class="project-badge">Project 2</span>
-      <span class="project-title">Detecting DNS Exfiltration with Wireshark</span>
-    </a>
-
-    <a class="project-item" href="/blog/project3.html">
-      <span class="project-badge">Project 3</span>
-      <span class="project-title">The Silent SIEM: Why Data ≄ Detection</span>
-    </a>
-
-    <a class="project-item" href="/blog/project4.html">
-      <span class="project-badge">Project 4</span>
-      <span class="project-title">The Logic of Sensor Fusion (And Why Your SIEM Needs a Trust Score)</span>
-    </a>
-
-  </div>
-</section>
+      <h2>Projects</h2>
+      <div class="projects-list">
+        <a class="project-item" href="/blog/project1.html">
+          <span class="project-badge">Project 1</span>
+          <span class="project-title">Detecting Brute Force Attacks with Splunk</span>
+        </a>
+        <a class="project-item" href="/blog/project2.html">
+          <span class="project-badge">Project 2</span>
+          <span class="project-title">Detecting DNS Exfiltration with Wireshark</span>
+        </a>
+        <a class="project-item" href="/blog/project3.html">
+          <span class="project-badge">Project 3</span>
+          <span class="project-title">The Silent SIEM: Why Data ≄ Detection</span>
+        </a>
+        <a class="project-item" href="/blog/project4.html">
+          <span class="project-badge">Project 4</span>
+          <span class="project-title">The Logic of Sensor Fusion (And Why Your SIEM Needs a Trust Score)</span>
+        </a>
+      </div>
+    </section>
+    
+    <section class="podcast-section">
+      <h2>THE DEBRIEF</h2>
+      <div class="podcast-description">Exploring the critical intersection of Aviation and Cybersecurity, breaking down real-world patterns into short debriefs.</div>
+      <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/show/4GLj6rTgWAupzNZOxCbEVZ?utm_source=generator&t=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </section>
   </div>
 </body>
 </html>
