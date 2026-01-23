@@ -6,7 +6,10 @@
   <title>The Silent SIEM: Why Data ≄ Detection</title>
   <meta name="description" content="A Post-Mortem on Stateless Logic, Schema Drift & Correlation Failure.">
   <style>
-    :root{ --bg:#0f1016; --fg:#d7d7e0; --muted:#9f9fbc; --accent:#b8a1ff; --card:#131318; --border:#2a2a32; }
+    :root{ 
+      --bg:#000000; --fg:#ffffff; --muted:#9ca3af; 
+      --accent:#e879f9; --card:#2a2a2a; --border:#2a2a2a; 
+    }
     html,body{
       margin:0; padding:0; background:var(--bg); color:var(--fg);
       font:15px/1.7 Helvetica, "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -19,15 +22,39 @@
     header{ padding:16px 0; }
     .back{ font-size:14px; color:var(--muted); }
 
-    h1, h2 {
+    h1 {
       font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
-      color: #c9bbff;
+      color: var(--accent);
+    }
+    h2 {
+      font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: var(--muted);
     }
     p, li {
       font-family: "Source Code Pro", "Courier New", monospace;
       font-size: 15px;
       line-height: 1.6;
-      color: #d7d7e0;
+      color: #ffffff;
+    }
+    code {
+      background: var(--card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "Source Code Pro", "Courier New", monospace;
+      color: var(--accent);
+    }
+    pre { 
+      background: #16161e; 
+      padding: 16px; 
+      border-radius: 8px; 
+      border: 1px solid var(--border); 
+      overflow-x: auto; 
+      margin: 16px 0; 
+    }
+    pre code { 
+      background: transparent; 
+      padding: 0; 
+      color: var(--accent); 
     }
     ul{ margin:8px 0 16px 20px; }
     hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
@@ -35,7 +62,7 @@
     /* gallery + lightbox */
     .muted{ color:var(--muted); }
     .project-gallery{ margin-top:28px }
-    .project-gallery h2{ color:var(--accent); margin-bottom:6px }
+    .project-gallery h2{ color:var(--muted); margin-bottom:6px }
     .img-grid{
       display:grid;
       grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
@@ -44,11 +71,11 @@
     .img-grid figure{ margin:0 }
     .img-grid img{
       width:100%; height:auto; display:block; border-radius:10px;
-      border:1px solid rgba(196,181,253,.18);
+      border:1px solid rgba(232,121,249,.25);
       box-shadow:0 4px 15px rgba(0,0,0,.25);
       cursor:zoom-in; transition:transform .2s ease, box-shadow .2s ease;
     }
-    .img-grid img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(0,0,0,.45) }
+    .img-grid img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(232,121,249,.4) }
 
     .lightbox{
       position:fixed; inset:0; display:none; place-items:center;
@@ -63,9 +90,6 @@
       position:absolute; top:12px; right:16px; font-size:28px;
       color:#fff; cursor:pointer; line-height:1
     }
-    pre { background: #16161e; padding: 16px; border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; margin: 16px 0; }
-    /* Changed color from #7aa2f7 (blue) to var(--accent) (purple) */
-    code { font-family: "Source Code Pro", monospace; color: var(--accent); }
   </style>
 </head>
 <body>
@@ -79,7 +103,7 @@
 
       <p><strong>A Post-Mortem on Stateless Logic, Schema Drift & Correlation Failure</strong></p>
 
-      <p><strong>Executive Summary:</strong> SOC failures are rarely caused by missing tools or broken ingestion. More often, they happen when logic, schema, and execution reality drift apart. In this project, I investigated why enabled and “healthy” Elastic Security detections failed to trigger during a simulated Linux intrusion chain, despite telemetry being present. The outcome was a clear reminder of a core detection engineering truth: Data existing ≠ detection working.</p>
+      <p><strong>Executive Summary:</strong> SOC failures are rarely caused by missing tools or broken ingestion. More often, they happen when logic, schema, and execution reality drift apart. In this project, I investigated why enabled and "healthy" Elastic Security detections failed to trigger during a simulated Linux intrusion chain, despite telemetry being present. The outcome was a clear reminder of a core detection engineering truth: Data existing ≠ detection working.</p>
 
       <h2>Phase 1: Telemetry Validation (Is the pipeline blind?)</h2>
       <p>Before testing detection logic, I validated ingestion end-to-end. Elastic Agent status: Healthy. Endpoint telemetry ingestion: Successful. Observed events included process execution (e.g., <code>whoami</code>) and outbound network activity (e.g., <code>curl</code>). Data was present in the <code>logs-endpoint.events.*</code> data stream.</p>
@@ -98,7 +122,7 @@
       
       <p><strong>1) Schema Mismatch:</strong> The SSH brute-force rule queried <code>system.auth</code>. A Dev Tools audit showed that the dataset never initialized; logs existed, but not in the schema the rule assumed. Lesson: a detection rule is only as effective as the data model it relies on.</p>
 
-      <p><strong>2) Field Semantic Brittleness:</strong> One process-based detection expected a specific parent executable. However, actual telemetry reflected different execution semantics (the shell interpreter instead). The detection failed not because the behavior was absent, but because the rule’s assumptions didn’t match real OS execution behavior.</p>
+      <p><strong>2) Field Semantic Brittleness:</strong> One process-based detection expected a specific parent executable. However, actual telemetry reflected different execution semantics (the shell interpreter instead). The detection failed not because the behavior was absent, but because the rule's assumptions didn't match real OS execution behavior.</p>
 
       <p><strong>3) Stateless Evaluation:</strong> Identity, process, and network telemetry existed, but remained siloed. Without state, time correlation, or entity linking, the SIEM evaluated each signal as low-fidelity noise. The system saw events; but it did not understand behavior.</p>
 
@@ -116,7 +140,7 @@ sequence by host.name, user.name with maxspan=15m
 
       <h2>Phase 5: The Deeper Finding (Correlation still fails if the dataset is wrong)</h2>
       <p>When I tested the sequence, the correlation did not produce alerts; not because the concept was flawed, but because the first stage of the chain could not match. The authentication events required by the sequence were not present in the expected dataset (<code>system.auth</code> never initialized). As a result, the sequence could not complete, even though later stages (process and network telemetry) were visible.</p>
-      <p>This reinforced a critical point: Stateful correlation improves detection, but it still depends on correct, validated telemetry. If a sequence relies on fields or datasets that don’t exist in the environment, correlation logic cannot compensate.</p>
+      <p>This reinforced a critical point: Stateful correlation improves detection, but it still depends on correct, validated telemetry. If a sequence relies on fields or datasets that don't exist in the environment, correlation logic cannot compensate.</p>
 
       <hr />
 
