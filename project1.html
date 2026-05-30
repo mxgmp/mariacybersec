@@ -5,52 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Project 1 — Detecting Brute Force Attacks with Splunk</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
     :root{
-      --bg:#0b0b0c;         /* near-black background */
-      --fg:#dcdcdc;         /* light gray text */
-      --muted:#a9a9a9;      /* secondary text */
-      --accent:#b8a1ff;     /* gentle purple */
+      --bg:#060a0e;
+      --fg:#dde4ed;
+      --muted:#4a6070;
+      --accent:#9333ea;
+      --card:#0d1520;
+      --border:#162030;
     }
     html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);}
+    body::before{
+      content:'';position:fixed;inset:0;
+      background-image:
+        linear-gradient(rgba(147,51,234,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(147,51,234,.03) 1px,transparent 1px);
+      background-size:48px 48px;
+      pointer-events:none;z-index:0
+    }
     body{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:15px;              /* smaller, not kiddie-large */
-      line-height:1.65;
+      font-family:'JetBrains Mono',ui-monospace,'Courier New',monospace;
+      font-size:15px;
+      line-height:1.75;
       -webkit-font-smoothing:antialiased;
       max-width:880px;
-      padding:32px 18px 80px;
+      padding:32px 24px 80px;
       margin:0 auto;
+      position:relative;z-index:1;
     }
-    header{margin-bottom:18px;}
+    header{margin-bottom:20px;}
     h1{
-      font-size:24px;
-      font-weight:700;
-      color:var(--accent);
-      margin:0 0 10px 0;
-      letter-spacing:.2px;
+      font-family:'Inter','Helvetica Neue',sans-serif;
+      font-size:26px; font-weight:700;
+      color:var(--accent); line-height:1.3; letter-spacing:-.2px;
+      margin:0 0 12px 0;
     }
     .lede{color:var(--fg); margin:0 0 12px 0;}
-    p{margin:10px 0;}
+    p{margin:12px 0;}
     h2{
-      font-size:16px;
-      color:var(--fg);
-      margin:26px 0 10px;
+      font-family:'JetBrains Mono',monospace;
+      font-size:11px; font-weight:600;
+      color:var(--muted); text-transform:uppercase; letter-spacing:.13em;
+      margin:32px 0 14px; padding-left:12px;
+      border-left:2px solid var(--accent);
     }
     strong{color:#fff;}
     u{text-decoration:underline;}
     ul{margin:8px 0 14px 18px;}
-    li{margin:4px 0;}
+    li{margin:5px 0;}
+    ul li::marker{color:var(--accent);}
     .muted{color:var(--muted);}
     a{color:var(--accent); text-decoration:none;}
-    a:hover{ text-decoration:underline; }
-    code{background:#131318; color:#eaeaea; padding:2px 5px; border-radius:4px;}
-    hr{
-      border:0; height:1px; background:#19191f; margin:28px 0;
+    a:hover{color:#b975ff;}
+    code{
+      background:var(--card); border:1px solid var(--border);
+      color:var(--accent); padding:1px 6px; border-radius:3px;
+      font-size:13px;
     }
-    footer{margin-top:28px; color:var(--muted); font-size:13px;}
-    /* optional image styling (for later) */
-    .img{margin:12px 0; border-radius:8px; display:block; max-width:100%; height:auto;}
-    .small{font-size:13.5px;}
+    hr{
+      border:0; height:1px;
+      background:linear-gradient(90deg,rgba(147,51,234,.4) 0%,transparent 100%);
+      margin:32px 0;
+    }
+    footer{margin-top:32px; color:var(--muted); font-size:12px;}
+    .img{margin:12px 0; border-radius:5px; display:block; max-width:100%; height:auto;}
+    .small{font-size:13px;}
   </style>
 </head>
 <body>
@@ -175,39 +194,41 @@
 </section>
 
 <style>
-  .project-gallery{margin-top:60px}
-  .project-gallery h2{color:var(--accent);margin-bottom:8px}
-  .project-gallery .muted{color:var(--muted);margin-bottom:20px}
+  .project-gallery{margin-top:56px}
+  .project-gallery h2{margin-bottom:10px}
+  .project-gallery .muted{color:var(--muted);margin-bottom:20px;font-size:13px}
 
   .img-grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
-    gap:16px;
+    gap:12px;
   }
   figure{margin:0}
   figure img{
-    width:100%; height:auto; display:block; border-radius:10px;
-    box-shadow:0 4px 15px rgba(0,0,0,.3);
-    cursor:zoom-in; transition:transform .25s ease, box-shadow .25s ease;
+    width:100%; height:auto; display:block; border-radius:5px;
+    border:1px solid var(--border);
+    box-shadow:0 2px 12px rgba(0,0,0,.4);
+    cursor:zoom-in; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   }
-  figure img:hover{ transform:scale(1.06); box-shadow:0 8px 30px rgba(0,0,0,.5) }
+  figure img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(0,0,0,.6); border-color:var(--accent); }
   figcaption{
-    margin-top:8px; color:var(--muted); font-size:13.5px; line-height:1.45
+    margin-top:6px; color:var(--muted); font-size:12px; line-height:1.45
   }
 
-  /* Lightbox */
   .lightbox{
     position:fixed; inset:0; display:none; place-items:center;
-    background:rgba(0,0,0,.82); z-index:9999; padding:22px;
+    background:rgba(0,0,0,.9); z-index:9999; padding:22px;
   }
   .lightbox.open{ display:grid }
   .lightbox img{
-    max-width:min(1200px,92vw); max-height:86vh; border-radius:12px;
-    box-shadow:0 10px 40px rgba(0,0,0,.6);
+    max-width:min(1200px,92vw); max-height:86vh; border-radius:6px;
+    box-shadow:0 10px 60px rgba(0,0,0,.8);
+    border:1px solid rgba(147,51,234,.3);
   }
   .lightbox .close{
-    position:absolute; top:14px; right:16px; font-size:28px;
-    color:#fff; cursor:pointer; line-height:1
+    position:absolute; top:14px; right:18px; font-size:28px;
+    color:#fff; cursor:pointer; line-height:1;
+    font-family:'JetBrains Mono',monospace;
   }
 </style>
   

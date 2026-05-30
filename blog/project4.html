@@ -6,85 +6,100 @@
   <title>SkyTrust: The Logic of Sensor Fusion</title>
   <meta name="description" content="Why your SIEM needs a trust score and how sensor fusion fixes blind spots.">
   <style>
-    :root{ 
-      --bg:#000000; --fg:#ffffff; --muted:#6b7280; 
-      --accent:#f472b6; --card:#2a2a2a; --border:#2a2a2a; 
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    :root{
+      --bg:#060a0e; --fg:#dde4ed; --muted:#4a6070;
+      --accent:#f472b6; --card:#0d1520; --border:#162030;
     }
     html,body{
       margin:0; padding:0; background:var(--bg); color:var(--fg);
-      font:15px/1.7 Helvetica, "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font:15px/1.75 'JetBrains Mono','Courier New',monospace;
+      -webkit-font-smoothing:antialiased;
     }
-    .container{ max-width:860px; margin:32px auto 80px; padding:0 16px; }
+    body::before{
+      content:'';position:fixed;inset:0;
+      background-image:
+        linear-gradient(rgba(244,114,182,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(244,114,182,.025) 1px,transparent 1px);
+      background-size:48px 48px;
+      pointer-events:none;z-index:0
+    }
+    .container{ max-width:860px; margin:32px auto 80px; padding:0 24px; position:relative; z-index:1; }
 
     a{ color:var(--accent); text-decoration:none; }
-    a:hover{ text-decoration:underline; }
+    a:hover{ color:#fba8d4; text-decoration:none; }
 
-    header{ padding:16px 0; }
-    .back{ font-size:14px; color:var(--muted); }
+    header{ padding:16px 0 20px; border-bottom:1px solid var(--border); margin-bottom:4px; }
+    .back{
+      font-size:11px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase;
+      font-family:'JetBrains Mono',monospace;
+    }
+    .back:hover{ color:var(--accent); }
 
-    h1 {
-      font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
-      color: var(--accent);
-      margin-top: 32px;
+    h1{
+      font-family:'Inter','Helvetica Neue',sans-serif;
+      font-size:26px; font-weight:700;
+      color:var(--accent); line-height:1.3; letter-spacing:-.2px;
+      margin:32px 0 20px;
     }
-    h2, h3 {
-      font-family: "Avenir Next", Avenir, Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
-      color: var(--muted);
-      margin-top: 32px;
+    h2, h3{
+      font-family:'JetBrains Mono',monospace;
+      font-size:11px; font-weight:600;
+      color:var(--muted); text-transform:uppercase; letter-spacing:.13em;
+      margin:36px 0 14px; padding-left:12px;
+      border-left:2px solid var(--accent);
     }
-    p, li {
-      font-family: "Source Code Pro", "Courier New", monospace;
-      font-size: 15px;
-      line-height: 1.6;
-      color: #ffffff;
-    }
-    .highlight { color: var(--accent); font-weight: 600; }
-    code { 
-      background: var(--card);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: "Source Code Pro", monospace; 
-      color: var(--accent); 
+    p{ margin:12px 0; }
+    li{ margin:5px 0; }
+    .highlight{ color:var(--accent); font-weight:600; }
+    code{
+      background:var(--card); border:1px solid var(--border);
+      padding:1px 6px; border-radius:3px;
+      font-family:'JetBrains Mono',monospace;
+      font-size:13px; color:var(--accent);
     }
     ul{ margin:8px 0 16px 20px; }
-    hr{ border:0; border-top:1px solid var(--border); margin:40px 0; }
+    ul li::marker{ color:var(--accent); }
+    hr{
+      border:0; height:1px;
+      background:linear-gradient(90deg,rgba(244,114,182,.4) 0%,transparent 100%);
+      margin:40px 0;
+    }
 
-    /* Inline Image Styling */
-    .inline-img {
-      width: 100%;
-      height: auto;
-      margin: 20px 0;
-      border-radius: 10px;
-      border: 1px solid rgba(244,114,182,.25);
-      box-shadow: 0 4px 15px rgba(0,0,0,.25);
-      cursor: zoom-in;
-      transition: transform .2s ease, box-shadow .2s ease;
+    .inline-img{
+      width:100%; height:auto;
+      margin:24px 0 8px; display:block;
+      border-radius:5px;
+      border:1px solid var(--border);
+      box-shadow:0 2px 12px rgba(0,0,0,.4);
+      cursor:zoom-in;
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
     }
-    .inline-img:hover { 
-      transform: scale(1.02); 
-      box-shadow: 0 8px 28px rgba(244,114,182,.4);
+    .inline-img:hover{
+      transform:scale(1.02);
+      border-color:var(--accent);
+      box-shadow:0 8px 28px rgba(0,0,0,.6);
     }
-    .caption {
-      font-size: 13px;
-      color: var(--muted);
-      text-align: center;
-      margin-top: -10px;
-      margin-bottom: 25px;
-      display: block;
+    .caption{
+      font-size:11px; color:var(--muted);
+      text-align:center; margin:0 0 28px; display:block;
+      letter-spacing:.04em;
     }
 
     .lightbox{
       position:fixed; inset:0; display:none; place-items:center;
-      background:rgba(0,0,0,.82); z-index:9999; padding:22px;
+      background:rgba(0,0,0,.9); z-index:9999; padding:22px;
     }
     .lightbox.open{ display:grid }
     .lightbox img{
-      max-width:min(1200px,92vw); max-height:86vh; border-radius:12px;
-      box-shadow:0 10px 40px rgba(0,0,0,.6);
+      max-width:min(1200px,92vw); max-height:86vh; border-radius:6px;
+      box-shadow:0 10px 60px rgba(0,0,0,.8);
+      border:1px solid rgba(244,114,182,.3);
     }
     .lightbox .close{
-      position:absolute; top:12px; right:16px; font-size:28px;
-      color:#fff; cursor:pointer; line-height:1
+      position:absolute; top:14px; right:18px; font-size:28px;
+      color:#fff; cursor:pointer; line-height:1;
+      font-family:'JetBrains Mono',monospace;
     }
   </style>
 </head>

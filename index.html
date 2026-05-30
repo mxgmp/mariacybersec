@@ -6,63 +6,87 @@
   <title>mariacybersec</title>
   <meta name="description" content="Cybersecurity projects, detection engineering notes, and lab documentation." />
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
     :root {
-      --bg:#000000; --card:#2a2a2a; --text:#ffffff; --muted:#e5e5e5;
-      --link:#c4b5fd; --accent:#b09cff;
-      --purple1:#9333ea; --purple2:#c084fc; --purple3:#e879f9; --purple4:#f472b6;
+      --bg:#060a0e; --card:#0d1520; --card-hover:#111f2e;
+      --text:#dde4ed; --muted:#4a6070;
+      --link:#a78bfa; --accent:#a78bfa;
+      --border:#162030;
+      --purple1:#8b5cf6; --purple2:#a78bfa; --purple3:#c084fc; --purple4:#e879f9;
     }
     *{box-sizing:border-box}
     html,body{
       margin:0;padding:0;background:var(--bg);color:var(--text);
-      font:16px/1.65 Helvetica,"Helvetica Neue",Arial,system-ui,-apple-system,Segoe UI,Roboto,sans-serif
+      font:15px/1.7 'Inter',system-ui,-apple-system,sans-serif;
+      -webkit-font-smoothing:antialiased
     }
-    .wrap{max-width:880px;margin:64px auto;padding:0 24px}
-    header{margin-bottom:28px}
+    body::before{
+      content:'';position:fixed;inset:0;
+      background-image:
+        linear-gradient(rgba(139,92,246,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(139,92,246,.035) 1px,transparent 1px);
+      background-size:48px 48px;
+      pointer-events:none;z-index:0
+    }
+    .wrap{max-width:880px;margin:64px auto;padding:0 24px;position:relative;z-index:1}
+    header{margin-bottom:36px}
     h1{
-      font-size:34px;margin:0 0 4px;letter-spacing:.2px;
-      font-family:"Avenir Next",Avenir,Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif
+      font-size:30px;margin:0 0 8px;letter-spacing:-.3px;
+      font-family:'Inter','Helvetica Neue',sans-serif;font-weight:700
     }
     .brand-accent{
-      background:linear-gradient(90deg,#ffffff,#ffb3d9);
+      background:linear-gradient(135deg,#c4b5fd 0%,#e879f9 55%,#f472b6 100%);
       -webkit-background-clip:text;background-clip:text;color:transparent
     }
-    h2{font-size:18px;margin:28px 0 12px;color:var(--muted);letter-spacing:.06em}
+    h2{
+      font-size:11px;margin:36px 0 14px;color:var(--muted);
+      letter-spacing:.15em;text-transform:uppercase;
+      font-family:'JetBrains Mono','Courier New',monospace;font-weight:500
+    }
     a{color:var(--link);text-decoration:none}
-    a:hover{color:#c3d5ff}
-    .muted-subheader{color:var(--muted);font-size:14px;letter-spacing:.02em}
-    .projects-list{display:flex;flex-direction:column;gap:16px;margin-top:8px}
+    a:hover{color:#c4b5fd}
+    .muted-subheader{
+      color:var(--muted);font-size:12px;letter-spacing:.04em;
+      font-family:'JetBrains Mono',monospace
+    }
+    .projects-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
     .project-item{
       display:block;
       background:var(--card);
-      border:1px solid rgba(196,181,253,.15);
-      border-radius:10px;
-      padding:18px 20px;
-      color:#ffffff;
-      font-size:15px;
-      transition:background .2s ease, transform .08s ease;
-      box-shadow:0 2px 8px rgba(0,0,0,0.4);
+      border:1px solid var(--border);
+      border-radius:4px;
+      padding:14px 20px;
+      color:var(--text);
+      font-size:14px;
+      transition:background .15s,transform .1s,box-shadow .15s;
     }
-    .project-item:hover{background:#353535;transform:translateY(-2px)}
-    .project-item.accent1{border-left:4px solid var(--purple1)}
-    .project-item.accent2{border-left:4px solid var(--purple2)}
-    .project-item.accent3{border-left:4px solid var(--purple3)}
-    .project-item.accent4{border-left:4px solid var(--purple4); background:#1f1f1f}
-    .project-item.accent4:hover{background:#2d2d2d}
+    .project-item:hover{background:var(--card-hover);transform:translateX(4px);color:var(--text)}
+    .project-item.accent1{border-left:3px solid var(--purple1)}
+    .project-item.accent2{border-left:3px solid var(--purple2)}
+    .project-item.accent3{border-left:3px solid var(--purple3)}
+    .project-item.accent4{border-left:3px solid var(--purple4)}
+    .project-item.accent1:hover{box-shadow:-4px 0 18px rgba(139,92,246,.2)}
+    .project-item.accent2:hover{box-shadow:-4px 0 18px rgba(167,139,250,.2)}
+    .project-item.accent3:hover{box-shadow:-4px 0 18px rgba(192,132,252,.2)}
+    .project-item.accent4:hover{box-shadow:-4px 0 18px rgba(232,121,249,.2)}
     .project-number{
-      font-weight:600;
-      margin-right:8px;
+      font-weight:600;margin-right:10px;
+      font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.6
     }
     .project-item.accent1 .project-number{color:var(--purple1)}
     .project-item.accent2 .project-number{color:var(--purple2)}
     .project-item.accent3 .project-number{color:var(--purple3)}
     .project-item.accent4 .project-number{color:var(--purple4)}
     .project-title{
-      font-size:15px;
-      font-family:"Source Code Pro","Courier New",monospace;
-      color:#ffffff;
+      font-size:14px;
+      font-family:'JetBrains Mono','Courier New',monospace;
+      color:var(--text);font-weight:500
     }
-    .podcast-section{margin-top:48px}
-    .podcast-description{color:var(--muted);font-size:14px;margin:8px 0 16px;line-height:1.5}
+    .podcast-section{margin-top:56px}
+    .podcast-description{
+      color:var(--muted);font-size:13px;margin:8px 0 20px;line-height:1.6;
+      font-family:'JetBrains Mono',monospace
+    }
   </style>
 </head>
 <body>
