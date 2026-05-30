@@ -6,13 +6,13 @@
   <title>mariacybersec</title>
   <meta name="description" content="Cybersecurity projects, detection engineering notes, and lab documentation." />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Share+Tech+Mono&display=swap');
     :root {
       --bg:#060a0e; --card:#0d1520; --card-hover:#111f2e;
       --text:#dde4ed; --muted:#4a6070;
-      --link:#a78bfa; --accent:#a78bfa;
+      --link:#00B4D8; --accent:#00B4D8;
       --border:#162030;
-      --purple1:#8b5cf6; --purple2:#a78bfa; --purple3:#c084fc; --purple4:#e879f9;
+      --purple1:#00B4D8; --purple2:#0077B6; --purple3:#023E8A; --purple4:#48CAE4;
     }
     *{box-sizing:border-box}
     html,body{
@@ -23,16 +23,16 @@
     body::before{
       content:'';position:fixed;inset:0;
       background-image:
-        linear-gradient(rgba(139,92,246,.035) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(139,92,246,.035) 1px,transparent 1px);
+        linear-gradient(rgba(0,150,200,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,150,200,.03) 1px,transparent 1px);
       background-size:48px 48px;
       pointer-events:none;z-index:0
     }
     .wrap{max-width:880px;margin:64px auto;padding:0 24px;position:relative;z-index:1}
     header{margin-bottom:36px}
     h1{
-      font-size:30px;margin:0 0 8px;letter-spacing:-.3px;
-      font-family:'Inter','Helvetica Neue',sans-serif;font-weight:700
+      font-size:30px;margin:0 0 8px;letter-spacing:.5px;
+      font-family:'Share Tech Mono','Courier New',monospace;font-weight:400
     }
     .brand-accent{
       background:linear-gradient(135deg,#c4b5fd 0%,#e879f9 55%,#f472b6 100%);
@@ -65,10 +65,10 @@
     .project-item.accent2{border-left:3px solid var(--purple2)}
     .project-item.accent3{border-left:3px solid var(--purple3)}
     .project-item.accent4{border-left:3px solid var(--purple4)}
-    .project-item.accent1:hover{box-shadow:-4px 0 18px rgba(139,92,246,.2)}
-    .project-item.accent2:hover{box-shadow:-4px 0 18px rgba(167,139,250,.2)}
-    .project-item.accent3:hover{box-shadow:-4px 0 18px rgba(192,132,252,.2)}
-    .project-item.accent4:hover{box-shadow:-4px 0 18px rgba(232,121,249,.2)}
+    .project-item.accent1:hover{box-shadow:-4px 0 18px rgba(0,180,216,.25)}
+    .project-item.accent2:hover{box-shadow:-4px 0 18px rgba(0,119,182,.25)}
+    .project-item.accent3:hover{box-shadow:-4px 0 18px rgba(2,62,138,.25)}
+    .project-item.accent4:hover{box-shadow:-4px 0 18px rgba(72,202,228,.25)}
     .project-number{
       font-weight:600;margin-right:10px;
       font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.6
@@ -93,7 +93,7 @@
   <div class="wrap">
     <header>
       <h1><span class="brand-accent">mariacybersec</span></h1>
-      <div class="muted-subheader">Hands-on labs • Detection engineering • Adversary emulation</div>
+      <div class="muted-subheader">Detection engineering • Threat intelligence • Adversary emulation • Network forensics</div>
     </header>
     <section>
       <h2>Projects</h2>
