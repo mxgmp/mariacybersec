@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Project 5 — I Built a 19-Service SOC Lab… Then Put It on My iPhone Homescreen</title>
+  <meta name="description" content="Building a status aggregator to monitor a 19-service SOC lab from an iPhone homescreen using Scriptable and Tailscale.">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    :root{
+      --bg:#060a0e; --fg:#dde4ed; --muted:#4a6070;
+      --accent:#2563EB; --card:#0d1520; --border:#162030;
+    }
+    html,body{
+      margin:0; padding:0; background:var(--bg); color:var(--fg);
+      font:15px/1.75 'JetBrains Mono','Courier New',monospace;
+      -webkit-font-smoothing:antialiased;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;
+      background-image:
+        linear-gradient(rgba(37,99,235,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(37,99,235,.03) 1px,transparent 1px);
+      background-size:48px 48px;
+      pointer-events:none;z-index:0
+    }
+    .container{ max-width:860px; margin:32px auto 80px; padding:0 24px; position:relative; z-index:1; }
+
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ color:#60a5fa; text-decoration:none; }
+
+    header{ padding:16px 0 20px; border-bottom:1px solid var(--border); margin-bottom:4px; }
+    .back{
+      font-size:11px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase;
+      font-family:'JetBrains Mono',monospace;
+    }
+    .back:hover{ color:var(--accent); }
+
+    h1{
+      font-family:'Inter','Helvetica Neue',sans-serif;
+      font-size:26px; font-weight:700;
+      color:var(--accent); line-height:1.3; letter-spacing:-.2px;
+      margin:32px 0 20px;
+    }
+    h2{
+      font-family:'JetBrains Mono',monospace;
+      font-size:11px; font-weight:600;
+      color:var(--muted); text-transform:uppercase; letter-spacing:.13em;
+      margin:36px 0 14px; padding-left:12px;
+      border-left:2px solid var(--accent);
+    }
+    p{ margin:12px 0; }
+    li{ margin:5px 0; }
+    .highlight{ color:var(--accent); font-weight:600; }
+    code{
+      background:var(--card); border:1px solid var(--border);
+      padding:1px 6px; border-radius:3px;
+      font-family:'JetBrains Mono','Courier New',monospace;
+      font-size:13px; color:var(--accent);
+    }
+    ul{ margin:8px 0 16px 20px; }
+    ul li::marker{ color:var(--accent); }
+    hr{
+      border:0; height:1px;
+      background:linear-gradient(90deg,rgba(37,99,235,.4) 0%,transparent 100%);
+      margin:40px 0;
+    }
+
+    .muted-text{ color:var(--muted); font-size:13px; }
+    .article-img{
+      display:block; width:100%; max-width:700px;
+      margin:20px 0; border-radius:5px;
+      border:1px solid var(--border);
+      box-shadow:0 2px 12px rgba(0,0,0,.4);
+      cursor:zoom-in; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .article-img:hover{ transform:scale(1.02); box-shadow:0 8px 28px rgba(0,0,0,.6); border-color:var(--accent); }
+    .project-gallery{ margin-top:40px }
+    .project-gallery h2{ margin-bottom:10px }
+    .img-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+      gap:12px;
+    }
+    .img-grid figure{ margin:0 }
+    .img-grid img{
+      width:100%; height:auto; display:block; border-radius:5px;
+      border:1px solid var(--border);
+      box-shadow:0 2px 12px rgba(0,0,0,.4);
+      cursor:zoom-in; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .img-grid img:hover{ transform:scale(1.04); box-shadow:0 8px 28px rgba(0,0,0,.6); border-color:var(--accent); }
+
+    .lightbox{
+      position:fixed; inset:0; display:none; place-items:center;
+      background:rgba(0,0,0,.9); z-index:9999; padding:22px;
+    }
+    .lightbox.open{ display:grid }
+    .lightbox img{
+      max-width:min(1200px,92vw); max-height:86vh; border-radius:6px;
+      box-shadow:0 10px 60px rgba(0,0,0,.8);
+      border:1px solid rgba(37,99,235,.3);
+    }
+    .lightbox .close{
+      position:absolute; top:14px; right:18px; font-size:28px;
+      color:#fff; cursor:pointer; line-height:1;
+      font-family:'JetBrains Mono',monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a class="back" href="/" aria-label="Back to home">← mariacybersec</a>
+    </header>
+
+    <main class="post">
+      <h1>I Built a 19-Service SOC Lab… Then Put It on My iPhone Homescreen</h1>
+
+      <p>I run a 19-service SOC detection lab on a Kali Linux machine: Elastic Stack, Suricata, Zeek, MISP, OpenCTI, Caldera, CAPE, Velociraptor, and more. At some point, I wanted to see the status of all of it from my iPhone homescreen, without opening a laptop.</p>
+
+      <p>At first, it seemed a simple idea, but I found 2 problems:</p>
+
+      <hr />
+
+      <h2>1: Finding Where Elasticsearch Actually Was</h2>
+      <p>First step was figuring out where to connect. I ran a port check expecting Elasticsearch on its default port 9200:</p>
+
+      <img class="article-img" src="/assets/project5/1.png" alt="Screenshot 1">
+
+      <p>What came back wasn't Elasticsearch. It was a Docker proxy. Malcolm, my network analysis tool, had claimed port 9200 at boot before Elasticsearch finished starting. Elasticsearch had moved to 9201 without any error or warning, creating a port conflict.</p>
+
+      <img class="article-img" src="/assets/project5/2.png" alt="Screenshot 2">
+
+      <p>Confirmed alive on 9201.</p>
+
+      <hr />
+
+      <h2>2: The Security Boundary I Had Built</h2>
+      <p>With the right port found, I then tried reaching the services from my iPhone over Tailscale, but nothing responded.</p>
+
+      <img class="article-img" src="/assets/project5/3.png" alt="Screenshot 3">
+      <img class="article-img" src="/assets/project5/4.png" alt="Screenshot 4">
+
+      <p>Every single service was bound to 127.0.0.1. Localhost only. Kibana, MISP, OpenCTI, TheHive, Shuffle, all of them. No external connections accepted, even over an encrypted Tailscale tunnel.</p>
+
+      <p>This was intentional as earlier I had hardened the lab by fixing Docker's UFW bypass and explicitly binding all services to localhost. The security was working exactly as designed, but it meant my iPhone couldn't reach any of them directly.</p>
+
+      <hr />
+
+      <h2>3: The Solution: A Status Aggregator</h2>
+      <p>Instead of trying to reach each service from the iPhone, I built a middleman.</p>
+
+      <p>A lightweight Python HTTP server that runs on the Kali machine itself, where it can reach every service locally and checks all 19 services three ways: systemd units via systemctl is-active, Zeek via zeekctl status, and Docker containers via docker ps. It bundles everything into one JSON response and serves it on port 9777, bound to the Tailscale interface only.</p>
+
+      <img class="article-img" src="/assets/project5/5.png" alt="Screenshot 5">
+      <img class="article-img" src="/assets/project5/6.png" alt="Screenshot 6">
+      <img class="article-img" src="/assets/project5/7.png" alt="Screenshot 7">
+
+      <p>Also called a health check aggregator, where one endpoint that consolidates status from multiple isolated internal systems sits inside the security boundary and provides a single controlled point of visibility from outside it.</p>
+
+      <img class="article-img" src="/assets/project5/8.png" alt="Screenshot 8">
+      <img class="article-img" src="/assets/project5/9.png" alt="Screenshot 9">
+
+      <hr />
+
+      <h2>4: The Widget</h2>
+      <p>With the API running, I built a Scriptable widget in JavaScript for iOS, as it lets you write widgets that run on your homescreen and pull live data from any API.</p>
+
+      <img class="article-img" src="/assets/project5/10.png" alt="Screenshot 10">
+
+      <p>The widget makes an HTTP request to the aggregator every 5 minutes, parses the JSON, and renders each service as a green or red dot in a two-column grid. It shows as well the summary count at the top and lists any down services in the bottom. Should Tailscale be disconnected, it shows "Lab unreachable" instead of failing silently.</p>
+
+      <hr />
+
+      <h2>What I Learned</h2>
+      <p><span class="highlight">Port conflicts are silent:</span> Elasticsearch moved to 9201 with no obvious error. Everything appeared to be running. If I hadn't investigated the actual listening ports I would have spent a long time debugging the wrong thing.</p>
+
+      <p><span class="highlight">Security boundaries create visibility gaps:</span> The same localhost binding that protected the lab from the network made it invisible from my phone, which demanded to build the right interface on top of it, not weaken the security.</p>
+
+      <p>The same logic applies in enterprise environments. You don't expose internal monitoring endpoints to get visibility into them but you build a controlled aggregation layer that gives you what you need without opening what you shouldn't.</p>
+
+      <hr />
+
+      <!-- === Project 5 Image Gallery (no captions) === -->
+      <section class="project-gallery">
+        <h2>Project Screenshots</h2>
+        <p class="muted-text">Click any image to zoom.</p>
+
+        <div class="img-grid">
+          <figure><img loading="lazy" src="/assets/project5/1.png"  alt="Screenshot 1"></figure>
+          <figure><img loading="lazy" src="/assets/project5/2.png"  alt="Screenshot 2"></figure>
+          <figure><img loading="lazy" src="/assets/project5/3.png"  alt="Screenshot 3"></figure>
+          <figure><img loading="lazy" src="/assets/project5/4.png"  alt="Screenshot 4"></figure>
+          <figure><img loading="lazy" src="/assets/project5/5.png"  alt="Screenshot 5"></figure>
+          <figure><img loading="lazy" src="/assets/project5/6.png"  alt="Screenshot 6"></figure>
+          <figure><img loading="lazy" src="/assets/project5/7.png"  alt="Screenshot 7"></figure>
+          <figure><img loading="lazy" src="/assets/project5/8.png"  alt="Screenshot 8"></figure>
+          <figure><img loading="lazy" src="/assets/project5/9.png"  alt="Screenshot 9"></figure>
+          <figure><img loading="lazy" src="/assets/project5/10.png" alt="Screenshot 10"></figure>
+        </div>
+      </section>
+
+      <p class="muted-text" style="margin-top:18px">
+        See the quick summary on Instagram <strong>@oncloudbyte</strong>.
+      </p>
+    </main>
+  </div>
+
+  <!-- Lightbox container -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <span class="close" id="lbClose" aria-label="Close">×</span>
+    <img id="lbImg" alt="">
+  </div>
+
+  <script>
+    (function(){
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      const lbClose = document.getElementById('lbClose');
+      document.querySelectorAll('.img-grid img, .article-img').forEach(img=>{
+        img.addEventListener('click',()=>{
+          lbImg.src = img.dataset.full || img.src;
+          lbImg.alt = img.alt || '';
+          lb.classList.add('open');
+          lb.setAttribute('aria-hidden','false');
+          document.body.style.overflow='hidden';
+        });
+      });
+      function closeLB(){
+        lb.classList.remove('open');
+        lb.setAttribute('aria-hidden','true');
+        document.body.style.overflow='';
+        lbImg.src='';
+      }
+      lbClose.addEventListener('click',closeLB);
+      lb.addEventListener('click',e=>{ if(e.target===lb) closeLB(); });
+      window.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLB(); });
+    })();
+  </script>
+</body>
+</html>
