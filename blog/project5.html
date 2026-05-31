@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Project 5 — I Built a 19-Service SOC Lab… Then Put It on My iPhone Homescreen</title>
-  <meta name="description" content="Building a status aggregator to monitor a 19-service SOC lab from an iPhone homescreen using Scriptable and Tailscale.">
+  <title>Project 5 — Building a SOC Lab & Putting It on My iPhone Homescreen</title>
+  <meta name="description" content="Building a SOC lab and putting it on my iPhone homescreen using a Python status aggregator and Scriptable widget.">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
     :root{
       --bg:#060a0e; --fg:#dde4ed; --muted:#4a6070;
-      --accent:#2563EB; --card:#0d1520; --border:#162030;
+      --accent:#0891B2; --card:#0d1520; --border:#162030;
     }
     html,body{
       margin:0; padding:0; background:var(--bg); color:var(--fg);
@@ -19,8 +19,8 @@
     body::before{
       content:'';position:fixed;inset:0;
       background-image:
-        linear-gradient(rgba(37,99,235,.03) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(37,99,235,.03) 1px,transparent 1px);
+        linear-gradient(rgba(8,145,178,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(8,145,178,.03) 1px,transparent 1px);
       background-size:48px 48px;
       pointer-events:none;z-index:0
     }
@@ -62,7 +62,7 @@
     ul li::marker{ color:var(--accent); }
     hr{
       border:0; height:1px;
-      background:linear-gradient(90deg,rgba(37,99,235,.4) 0%,transparent 100%);
+      background:linear-gradient(90deg,rgba(8,145,178,.4) 0%,transparent 100%);
       margin:40px 0;
     }
 
@@ -99,7 +99,7 @@
     .lightbox img{
       max-width:min(1200px,92vw); max-height:86vh; border-radius:6px;
       box-shadow:0 10px 60px rgba(0,0,0,.8);
-      border:1px solid rgba(37,99,235,.3);
+      border:1px solid rgba(8,145,178,.3);
     }
     .lightbox .close{
       position:absolute; top:14px; right:18px; font-size:28px;
@@ -115,7 +115,7 @@
     </header>
 
     <main class="post">
-      <h1>I Built a 19-Service SOC Lab… Then Put It on My iPhone Homescreen</h1>
+      <h1>Building a SOC Lab &amp; Putting It on My iPhone Homescreen</h1>
 
       <p>I run a 19-service SOC detection lab on a Kali Linux machine: Elastic Stack, Suricata, Zeek, MISP, OpenCTI, Caldera, CAPE, Velociraptor, and more. At some point, I wanted to see the status of all of it from my iPhone homescreen, without opening a laptop.</p>
 
