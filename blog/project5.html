@@ -180,27 +180,6 @@
 
       <p>The same logic applies in enterprise environments. You don't expose internal monitoring endpoints to get visibility into them but you build a controlled aggregation layer that gives you what you need without opening what you shouldn't.</p>
 
-      <hr />
-
-      <!-- === Project 5 Image Gallery (no captions) === -->
-      <section class="project-gallery">
-        <h2>Project Screenshots</h2>
-        <p class="muted-text">Click any image to zoom.</p>
-
-        <div class="img-grid">
-          <figure><img loading="lazy" src="/assets/project5/1.png"  alt="Screenshot 1"></figure>
-          <figure><img loading="lazy" src="/assets/project5/2.png"  alt="Screenshot 2"></figure>
-          <figure><img loading="lazy" src="/assets/project5/3.png"  alt="Screenshot 3"></figure>
-          <figure><img loading="lazy" src="/assets/project5/4.png"  alt="Screenshot 4"></figure>
-          <figure><img loading="lazy" src="/assets/project5/5.png"  alt="Screenshot 5"></figure>
-          <figure><img loading="lazy" src="/assets/project5/6.png"  alt="Screenshot 6"></figure>
-          <figure><img loading="lazy" src="/assets/project5/7.png"  alt="Screenshot 7"></figure>
-          <figure><img loading="lazy" src="/assets/project5/8.png"  alt="Screenshot 8"></figure>
-          <figure><img loading="lazy" src="/assets/project5/9.png"  alt="Screenshot 9"></figure>
-          <figure><img loading="lazy" src="/assets/project5/10.png" alt="Screenshot 10"></figure>
-        </div>
-      </section>
-
       <p class="muted-text" style="margin-top:18px">
         See the quick summary on Instagram <strong>@oncloudbyte</strong>.
       </p>
@@ -218,7 +197,7 @@
       const lb = document.getElementById('lightbox');
       const lbImg = document.getElementById('lbImg');
       const lbClose = document.getElementById('lbClose');
-      document.querySelectorAll('.img-grid img, .article-img').forEach(img=>{
+      document.querySelectorAll('.article-img').forEach(img=>{
         img.addEventListener('click',()=>{
           lbImg.src = img.dataset.full || img.src;
           lbImg.alt = img.alt || '';
