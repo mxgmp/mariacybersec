@@ -6,9 +6,9 @@
   <title>mariacybersec</title>
   <meta name="description" content="Cybersecurity projects, detection engineering notes, and lab documentation." />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Share+Tech+Mono&family=Oswald:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Share+Tech+Mono&family=Oswald:wght@400;500;600;700&display=swap');
     :root {
-      --bg:#060a0e; --card:#0d1520; --card-hover:#111f2e;
+      --bg:#0a0a0a; --card:#0d1520; --card-hover:#111f2e;
       --text:#dde4ed; --muted:#4a6070;
       --link:#00B4D8; --accent:#00B4D8;
       --border:#162030;
@@ -19,14 +19,6 @@
       margin:0;padding:0;background:var(--bg);color:var(--text);
       font:15px/1.7 'Inter',system-ui,-apple-system,sans-serif;
       -webkit-font-smoothing:antialiased
-    }
-    body::before{
-      content:'';position:fixed;inset:0;
-      background-image:
-        linear-gradient(rgba(0,150,200,.03) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(0,150,200,.03) 1px,transparent 1px);
-      background-size:48px 48px;
-      pointer-events:none;z-index:0
     }
     .wrap{max-width:880px;margin:64px auto;padding:0 24px;position:relative;z-index:1}
     header{margin-bottom:36px}
@@ -39,9 +31,9 @@
       -webkit-background-clip:text;background-clip:text;color:transparent
     }
     h2{
-      font-size:11px;margin:36px 0 14px;color:#ffffff;
-      letter-spacing:.15em;text-transform:uppercase;
-      font-family:'JetBrains Mono','Courier New',monospace;font-weight:500
+      font-size:20px;margin:36px 0 14px;color:#ffffff;
+      letter-spacing:.2em;text-transform:uppercase;
+      font-family:'Oswald',sans-serif;font-weight:600
     }
     a{color:var(--link);text-decoration:none}
     a:hover{color:#c4b5fd}
@@ -83,8 +75,8 @@
     .col-dest .flap{display:block}
     .col-status{font-size:13px;font-weight:600;letter-spacing:.1em;color:#FFB000;perspective:200px}
     .row-desc{
-      margin-top:6px;font-size:15px;line-height:1.6;color:#e8e8e8;
-      font-family:'Oswald',sans-serif;font-weight:400;letter-spacing:.01em;
+      margin-top:6px;font-size:15px;line-height:1.75;color:#e8e8e8;
+      font-family:'Inter',sans-serif;font-weight:300;letter-spacing:.01em;
     }
     .flap-char{display:inline-block}
     .flap-char.spin{animation:flap-spin .12s linear}
