@@ -46,32 +46,32 @@
       display:flex;flex-direction:column;gap:20px;margin-top:8px;
       background:#0a0a0a;padding:20px;border-radius:4px;
     }
-    .board{background:#0a0a0a;border:1px solid rgba(255,176,0,.14);border-radius:4px;overflow:hidden}
+    .board{background:#361C3B;border:1px solid rgba(95,54,89,.5);border-radius:4px;overflow:hidden}
     .board-header{
-      background:#141414;color:#FFB000;
+      background:#141414;color:#AC1B2F;
       font-family:'Oswald',sans-serif;
       font-size:14px;font-weight:600;letter-spacing:.28em;
-      padding:12px 20px;border-bottom:1px solid rgba(255,176,0,.18);
+      padding:12px 20px;border-bottom:1px solid rgba(95,54,89,.55);
     }
     .board-header::before{content:'✈ ';opacity:.6}
     .board-table{display:flex;flex-direction:column}
     .board-row{
       display:grid;grid-template-columns:90px 1fr 120px;gap:14px;
-      align-items:start;padding:18px 20px;border-bottom:1px solid rgba(255,176,0,.1);
-      font-family:'Oswald',sans-serif;color:#FFB000;text-decoration:none;
+      align-items:start;padding:18px 20px;border-bottom:1px solid rgba(95,54,89,.35);
+      font-family:'Oswald',sans-serif;text-decoration:none;
       transition:background .15s;
     }
     a.board-row{cursor:pointer}
     .board-row.no-link{cursor:default}
     .board-row:last-child{border-bottom:none}
-    .board-row:hover{background:rgba(255,176,0,.07)}
+    .board-row:hover{background:rgba(95,54,89,.25)}
     .board-row-head{
-      font-size:10px;letter-spacing:.14em;color:#8a6a2a;font-weight:600;
+      font-size:10px;letter-spacing:.14em;color:#9c7a95;font-weight:600;
       text-transform:uppercase;
     }
     .board-row-head:hover{background:none}
-    .col-flight{font-size:15px;font-weight:600;letter-spacing:.05em;color:#8a8a8a;perspective:200px}
-    .col-dest{font-size:17px;font-weight:500;letter-spacing:.03em;color:#FF6B9D;perspective:200px}
+    .col-flight{font-size:15px;font-weight:600;letter-spacing:.05em;color:#5F3659;perspective:200px}
+    .col-dest{font-size:17px;font-weight:500;letter-spacing:.03em;color:#E6353B;perspective:200px}
     .col-dest .flap{display:block}
     .col-status{font-size:13px;font-weight:600;letter-spacing:.1em;color:#7fb87f;perspective:200px}
     .row-desc{
@@ -93,7 +93,7 @@
       .board-row>div{display:flex;flex-direction:column;gap:2px}
       .board-row [data-label]::before{
         content:attr(data-label);
-        font-size:9px;letter-spacing:.14em;color:#7a5a20;
+        font-size:9px;letter-spacing:.14em;color:#7a5f74;
         font-family:'Oswald',sans-serif;
       }
     }
