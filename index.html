@@ -57,7 +57,7 @@
     .board-table{display:flex;flex-direction:column}
     .board-row{
       display:grid;grid-template-columns:90px 1fr 120px;gap:14px;
-      align-items:start;padding:12px 20px;border-bottom:1px solid rgba(255,176,0,.1);
+      align-items:start;padding:18px 20px;border-bottom:1px solid rgba(255,176,0,.1);
       font-family:'Oswald',sans-serif;color:#FFB000;text-decoration:none;
       transition:background .15s;
     }
@@ -70,33 +70,16 @@
       text-transform:uppercase;
     }
     .board-row-head:hover{background:none}
-    .col-flight{font-size:15px;font-weight:600;letter-spacing:.05em;perspective:200px}
-    .col-dest{font-size:15px;font-weight:500;letter-spacing:.03em;perspective:200px}
-    .col-dest .flap{display:block;word-spacing:.5em}
-    .col-status{font-size:13px;font-weight:600;letter-spacing:.1em;color:#FFB000;perspective:200px}
+    .col-flight{font-size:15px;font-weight:600;letter-spacing:.05em;color:rgba(255,176,0,.6);perspective:200px}
+    .col-dest{font-size:17px;font-weight:500;letter-spacing:.03em;color:#FFB000;perspective:200px}
+    .col-dest .flap{display:block}
+    .col-status{font-size:13px;font-weight:600;letter-spacing:.1em;color:#7fb87f;perspective:200px}
     .row-desc{
       margin-top:6px;font-size:13px;line-height:1.75;color:#e8e8e8;
       font-family:'JetBrains Mono',monospace;font-weight:400;letter-spacing:.04em;
     }
     .flap-char{display:inline-block}
     .flap-char.spin{animation:flap-spin .12s linear}
-    .flap-char.tile{
-      position:relative;
-      display:inline-flex;align-items:center;justify-content:center;
-      min-width:.85em;
-      padding:2px 5px;
-      margin:0 2px 3px 0;
-      background:#141414;
-      border:1px solid rgba(255,176,0,.22);
-      border-radius:2px;
-      line-height:1.2;
-    }
-    .flap-char.tile::after{
-      content:'';
-      position:absolute;left:1px;right:1px;top:calc(50% - .5px);
-      height:1px;background:rgba(255,255,255,.08);
-      pointer-events:none;
-    }
     @keyframes flap-spin{
       0%{transform:rotateX(0deg)}
       50%{transform:rotateX(-90deg)}
@@ -106,15 +89,13 @@
     @media (max-width:640px){
       .board-header{font-size:11px;letter-spacing:.2em;padding:10px 16px}
       .board-row-head{display:none}
-      .board-row{grid-template-columns:1fr;gap:8px;padding:14px 16px}
+      .board-row{grid-template-columns:1fr;gap:8px;padding:18px 16px}
       .board-row>div{display:flex;flex-direction:column;gap:2px}
       .board-row [data-label]::before{
         content:attr(data-label);
         font-size:9px;letter-spacing:.14em;color:#7a5a20;
         font-family:'Oswald',sans-serif;
       }
-      .col-dest .flap{word-spacing:.35em}
-      .flap-char.tile{padding:1px 4px;margin:0 1px 2px 0}
     }
     .podcast-section{margin-top:56px}
     .podcast-description{
@@ -231,7 +212,6 @@
       function randChar(){ return POOL[Math.floor(Math.random()*POOL.length)]; }
 
       function wrapChars(el){
-        var isTile = !!el.closest('.col-dest');
         var text = el.textContent;
         el.textContent = '';
         var entries = [];
@@ -240,12 +220,11 @@
           if (!/[A-Z0-9]/.test(ch)){
             // Spaces/punctuation: plain text nodes only. Wrapping a lone
             // space in an inline-block span collapses it to zero width.
-            // A real space character here also keeps word-wrap working.
             el.appendChild(document.createTextNode(ch));
             continue;
           }
           var span = document.createElement('span');
-          span.className = isTile ? 'flap-char tile' : 'flap-char';
+          span.className = 'flap-char';
           span.textContent = ch;
           el.appendChild(span);
           entries.push({ span: span, final: ch });
