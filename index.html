@@ -46,33 +46,39 @@
       display:flex;flex-direction:column;gap:20px;margin-top:8px;
       background:#0a0a0a;padding:20px;border-radius:4px;
     }
-    .board{background:#361C3B;border:1px solid rgba(95,54,89,.5);border-radius:4px;overflow:hidden}
+    .board{background:#0a0a0a;border:1px solid rgba(255,176,0,.14);border-radius:4px;overflow:hidden}
     .board-header{
-      background:#141414;color:#AC1B2F;
+      background:#141414;color:#FFB000;
       font-family:'Oswald',sans-serif;
       font-size:14px;font-weight:600;letter-spacing:.28em;
-      padding:12px 20px;border-bottom:1px solid rgba(95,54,89,.55);
+      padding:12px 20px;border-bottom:1px solid rgba(255,176,0,.18);
     }
     .board-header::before{content:'✈ ';opacity:.6}
     .board-table{display:flex;flex-direction:column}
     .board-row{
       display:grid;grid-template-columns:90px 1fr 120px;gap:14px;
-      align-items:start;padding:18px 20px;border-bottom:1px solid rgba(95,54,89,.35);
-      font-family:'Oswald',sans-serif;text-decoration:none;
+      align-items:start;padding:18px 20px;border-bottom:1px solid rgba(255,176,0,.1);
+      font-family:'Oswald',sans-serif;color:#FFB000;text-decoration:none;
       transition:background .15s;
     }
     a.board-row{cursor:pointer}
     .board-row.no-link{cursor:default}
     .board-row:last-child{border-bottom:none}
-    .board-row:hover{background:rgba(95,54,89,.25)}
+    .board-row:hover{background:rgba(255,176,0,.07)}
     .board-row-head{
-      font-size:10px;letter-spacing:.14em;color:#9c7a95;font-weight:600;
+      font-size:10px;letter-spacing:.14em;color:#8a6a2a;font-weight:600;
       text-transform:uppercase;
     }
     .board-row-head:hover{background:none}
-    .col-flight{font-size:15px;font-weight:600;letter-spacing:.05em;color:#5F3659;perspective:200px}
-    .col-dest{font-size:17px;font-weight:500;letter-spacing:.03em;color:#E6353B;perspective:200px}
+    .col-flight{font-size:15px;font-weight:600;letter-spacing:.05em;color:rgba(255,176,0,.6);perspective:200px}
+    .col-dest{font-size:17px;font-weight:500;letter-spacing:.03em;perspective:200px}
     .col-dest .flap{display:block}
+    .col-dest.dest-1{color:#B85BC7}
+    .col-dest.dest-2{color:#C4568F}
+    .col-dest.dest-3{color:#E6353B}
+    .col-dest.dest-4{color:#D11628}
+    .col-dest.dest-5{color:#E85D75}
+    .col-dest.dest-6{color:#A855C7}
     .col-status{font-size:13px;font-weight:600;letter-spacing:.1em;color:#7fb87f;perspective:200px}
     .row-desc{
       margin-top:6px;font-size:13px;line-height:1.75;color:#e8e8e8;
@@ -93,7 +99,7 @@
       .board-row>div{display:flex;flex-direction:column;gap:2px}
       .board-row [data-label]::before{
         content:attr(data-label);
-        font-size:9px;letter-spacing:.14em;color:#7a5f74;
+        font-size:9px;letter-spacing:.14em;color:#7a5a20;
         font-family:'Oswald',sans-serif;
       }
     }
@@ -122,7 +128,7 @@
 
             <div class="board-row no-link">
               <div class="col-flight flap" data-label="FLIGHT">AV-001</div>
-              <div class="col-dest" data-label="DESTINATION">
+              <div class="col-dest dest-1" data-label="DESTINATION">
                 <span class="flap">ACARS DATALINK</span>
                 <div class="row-desc">Exploring whether detection engineering applies to aviation datalink. Ingesting and baselining lawfully-sourced, decoded ACARS/VDL2 message data.</div>
               </div>
@@ -140,7 +146,7 @@
 
             <a class="board-row" href="/blog/project1.html">
               <div class="col-flight flap" data-label="FLIGHT">DE-001</div>
-              <div class="col-dest" data-label="DESTINATION">
+              <div class="col-dest dest-2" data-label="DESTINATION">
                 <span class="flap">SSH BRUTE FORCE</span>
                 <div class="row-desc">Splunk workflow to catch brute-force logins. Failed-auth searches grouped by source IP, real-time alerting and a dashboard panel.</div>
               </div>
@@ -149,7 +155,7 @@
 
             <a class="board-row" href="/blog/project2.html">
               <div class="col-flight flap" data-label="FLIGHT">DE-002</div>
-              <div class="col-dest" data-label="DESTINATION">
+              <div class="col-dest dest-3" data-label="DESTINATION">
                 <span class="flap">DNS EXFILTRATION</span>
                 <div class="row-desc">Simulated normal and tunneled DNS traffic with Python and Scapy, then analysed entropy and packet behaviour in Wireshark.</div>
               </div>
@@ -158,7 +164,7 @@
 
             <a class="board-row" href="/blog/project3.html">
               <div class="col-flight flap" data-label="FLIGHT">DE-003</div>
-              <div class="col-dest" data-label="DESTINATION">
+              <div class="col-dest dest-4" data-label="DESTINATION">
                 <span class="flap">THE SILENT SIEM</span>
                 <div class="row-desc">Post-mortem on why healthy Elastic detections stayed silent during a simulated intrusion chain. Schema drift, stateless logic and a stateful EQL fix.</div>
               </div>
@@ -167,7 +173,7 @@
 
             <a class="board-row" href="/blog/project4.html">
               <div class="col-flight flap" data-label="FLIGHT">DE-004</div>
-              <div class="col-dest" data-label="DESTINATION">
+              <div class="col-dest dest-5" data-label="DESTINATION">
                 <span class="flap">SENSOR TAMPERING</span>
                 <div class="row-desc">Python trust engine using EWMA and robust Z-scores to fuse multi-sensor telemetry and catch drift, spoofing and dropout that single-source alerts miss.</div>
               </div>
@@ -185,7 +191,7 @@
 
             <a class="board-row" href="/blog/project5.html">
               <div class="col-flight flap" data-label="FLIGHT">INF-001</div>
-              <div class="col-dest" data-label="DESTINATION">
+              <div class="col-dest dest-6" data-label="DESTINATION">
                 <span class="flap">SOC LAB</span>
                 <div class="row-desc">19-service SOC lab (Elastic, Suricata, Zeek, MISP and more) with a Python status aggregator and iOS Scriptable widget for homescreen visibility.</div>
               </div>
