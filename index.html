@@ -6,7 +6,7 @@
   <title>mariacybersec</title>
   <meta name="description" content="Cybersecurity projects, detection engineering notes, and lab documentation." />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Share+Tech+Mono&family=Oswald:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Share+Tech+Mono&family=Oswald:wght@400;500;600;700&family=Limelight&display=swap');
     :root {
       --bg:#0a0a0a; --card:#0d1520; --card-hover:#111f2e;
       --text:#dde4ed; --muted:#4a6070;
@@ -24,7 +24,7 @@
     header{margin-bottom:36px}
     h1{
       font-size:30px;margin:0 0 8px;letter-spacing:.5px;
-      font-family:'Share Tech Mono','Courier New',monospace;font-weight:400
+      font-family:'Limelight','Share Tech Mono','Courier New',monospace;font-weight:400
     }
     .brand-accent{
       background:linear-gradient(135deg,#FFFFFF 0%,#9CA3AF 100%);
@@ -114,6 +114,24 @@
       <div class="boards">
 
         <div class="board">
+          <div class="board-header">AVIATION SECURITY</div>
+          <div class="board-table">
+            <div class="board-row board-row-head">
+              <div>FLIGHT</div><div>DESTINATION</div><div>STATUS</div>
+            </div>
+
+            <div class="board-row no-link">
+              <div class="col-flight flap" data-label="FLIGHT">AV-001</div>
+              <div class="col-dest" data-label="DESTINATION">
+                <span class="flap">ACARS DATALINK</span>
+                <div class="row-desc">Exploring whether detection engineering applies to aviation datalink. Ingesting and baselining lawfully-sourced, decoded ACARS/VDL2 message data.</div>
+              </div>
+              <div class="col-status flap" data-label="STATUS">SHIPPED</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="board">
           <div class="board-header">DETECTION ENGINEERING</div>
           <div class="board-table">
             <div class="board-row board-row-head">
@@ -155,24 +173,6 @@
               </div>
               <div class="col-status flap" data-label="STATUS">SHIPPED</div>
             </a>
-          </div>
-        </div>
-
-        <div class="board">
-          <div class="board-header">AVIATION SECURITY</div>
-          <div class="board-table">
-            <div class="board-row board-row-head">
-              <div>FLIGHT</div><div>DESTINATION</div><div>STATUS</div>
-            </div>
-
-            <div class="board-row no-link">
-              <div class="col-flight flap" data-label="FLIGHT">AV-001</div>
-              <div class="col-dest" data-label="DESTINATION">
-                <span class="flap">ACARS DATALINK</span>
-                <div class="row-desc">Exploring whether detection engineering applies to aviation datalink. Ingesting and baselining lawfully-sourced, decoded ACARS/VDL2 message data.</div>
-              </div>
-              <div class="col-status flap" data-label="STATUS">SHIPPED</div>
-            </div>
           </div>
         </div>
 
