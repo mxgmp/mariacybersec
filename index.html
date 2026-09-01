@@ -49,41 +49,60 @@
       color:var(--muted);font-size:12px;letter-spacing:.04em;
       font-family:'JetBrains Mono',monospace
     }
-    .projects-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-    .project-item{
-      display:block;
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:4px;
-      padding:14px 20px;
-      color:var(--text);
-      font-size:14px;
-      transition:background .15s,transform .1s,box-shadow .15s;
+    /* ===== Departure boards ===== */
+    .boards{display:flex;flex-direction:column;gap:28px;margin-top:8px}
+    .board{background:#0a0704;border:1px solid #2e1f08;border-radius:4px;overflow:hidden}
+    .board-header{
+      background:#150d02;color:#ffb300;
+      font-family:'Share Tech Mono','JetBrains Mono',monospace;
+      font-size:13px;font-weight:700;letter-spacing:.28em;
+      padding:12px 20px;border-bottom:1px solid #3a2607;
+      text-shadow:0 0 8px rgba(255,179,0,.45);
     }
-    .project-item:hover{background:var(--card-hover);transform:translateX(4px);color:var(--text)}
-    .project-item.accent1{border-left:3px solid var(--purple1)}
-    .project-item.accent2{border-left:3px solid var(--purple2)}
-    .project-item.accent3{border-left:3px solid var(--purple3)}
-    .project-item.accent4{border-left:3px solid var(--purple4)}
-    .project-item.accent5{border-left:3px solid var(--purple5)}
-    .project-item.accent1:hover{box-shadow:-4px 0 18px rgba(0,249,255,.25)}
-    .project-item.accent2:hover{box-shadow:-4px 0 18px rgba(0,179,255,.25)}
-    .project-item.accent3:hover{box-shadow:-4px 0 18px rgba(143,252,255,.25)}
-    .project-item.accent4:hover{box-shadow:-4px 0 18px rgba(3,0,86,.25)}
-    .project-item.accent5:hover{box-shadow:-4px 0 18px rgba(9,0,255,.25)}
-    .project-number{
-      font-weight:600;margin-right:10px;
-      font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.6
+    .board-header::before{content:'✈ ';opacity:.7}
+    .board-table{display:flex;flex-direction:column}
+    .board-row{
+      display:grid;grid-template-columns:78px 1fr 200px 110px;gap:14px;
+      align-items:start;padding:12px 20px;border-bottom:1px solid rgba(255,179,0,.1);
+      font-family:'JetBrains Mono',monospace;color:#ffc94d;text-decoration:none;
+      transition:background .15s;
     }
-    .project-item.accent1 .project-number{color:#8ffcff}
-    .project-item.accent2 .project-number{color:#00b3ff}
-    .project-item.accent3 .project-number{color:#00f9ff}
-    .project-item.accent4 .project-number{color:#8ffcff}
-    .project-item.accent5 .project-number{color:#0900ff}
-    .project-title{
-      font-size:14px;
-      font-family:'JetBrains Mono','Courier New',monospace;
-      color:var(--text);font-weight:500
+    a.board-row{cursor:pointer}
+    .board-row.no-link{cursor:default}
+    .board-row:last-child{border-bottom:none}
+    .board-row:hover{background:rgba(255,179,0,.07)}
+    .board-row-head{
+      font-size:10px;letter-spacing:.14em;color:#8a6a2a;font-weight:600;
+      text-transform:uppercase;
+    }
+    .board-row-head:hover{background:none}
+    .col-flight{font-size:14px;font-weight:600;letter-spacing:.05em;perspective:200px}
+    .col-dest{font-size:14px;letter-spacing:.04em;perspective:200px}
+    .col-dest .flap{display:block}
+    .col-gate{font-size:12px;color:#e0a030;letter-spacing:.03em;perspective:200px}
+    .col-status{font-size:12px;font-weight:700;letter-spacing:.08em;color:#ffb300;perspective:200px}
+    .row-desc{
+      margin-top:4px;font-size:11.5px;line-height:1.5;color:#9c7a3a;
+      font-family:'JetBrains Mono',monospace;letter-spacing:.01em;
+    }
+    .flap-char{display:inline-block}
+    .flap-char.spin{animation:flap-spin .12s linear}
+    @keyframes flap-spin{
+      0%{transform:rotateX(0deg)}
+      50%{transform:rotateX(-90deg)}
+      51%{transform:rotateX(90deg)}
+      100%{transform:rotateX(0deg)}
+    }
+    @media (max-width:640px){
+      .board-header{font-size:11px;letter-spacing:.2em;padding:10px 16px}
+      .board-row-head{display:none}
+      .board-row{grid-template-columns:1fr;gap:8px;padding:14px 16px}
+      .board-row>div{display:flex;flex-direction:column;gap:2px}
+      .board-row [data-label]::before{
+        content:attr(data-label);
+        font-size:9px;letter-spacing:.14em;color:#7a5a20;
+        font-family:'JetBrains Mono',monospace;
+      }
     }
     .podcast-section{margin-top:56px}
     .podcast-description{
@@ -99,23 +118,95 @@
       <div class="muted-subheader">Detection engineering • Threat intelligence • Adversary emulation • Network forensics</div>
     </header>
     <section>
-      <h2>Projects</h2>
-      <div class="projects-list">
-        <a class="project-item accent1" href="/blog/project1.html">
-          <span class="project-number">1.</span><span class="project-title">Detecting Brute Force Attacks with Splunk</span>
-        </a>
-        <a class="project-item accent2" href="/blog/project2.html">
-          <span class="project-number">2.</span><span class="project-title">Detecting DNS Exfiltration with Wireshark</span>
-        </a>
-        <a class="project-item accent3" href="/blog/project3.html">
-          <span class="project-number">3.</span><span class="project-title">The Silent SIEM: Why Data ≄ Detection</span>
-        </a>
-        <a class="project-item accent4" href="/blog/project4.html">
-          <span class="project-number">4.</span><span class="project-title">The Logic of Sensor Fusion (And Why Your SIEM Needs a Trust Score)</span>
-        </a>
-        <a class="project-item accent5" href="/blog/project5.html">
-          <span class="project-number">5.</span><span class="project-title">Building a SOC Lab &amp; Putting It on My iPhone Homescreen</span>
-        </a>
+      <div class="boards">
+
+        <div class="board">
+          <div class="board-header">DETECTION ENGINEERING</div>
+          <div class="board-table">
+            <div class="board-row board-row-head">
+              <div>FLIGHT</div><div>DESTINATION</div><div>GATE</div><div>STATUS</div>
+            </div>
+
+            <a class="board-row" href="/blog/project1.html">
+              <div class="col-flight flap" data-label="FLIGHT">DE-001</div>
+              <div class="col-dest" data-label="DESTINATION">
+                <span class="flap">SSH BRUTE FORCE</span>
+                <div class="row-desc">Splunk workflow to catch brute-force logins — failed-auth searches grouped by source IP, real-time alerting, and a dashboard panel.</div>
+              </div>
+              <div class="col-gate flap" data-label="GATE">SPLUNK</div>
+              <div class="col-status flap" data-label="STATUS">SHIPPED</div>
+            </a>
+
+            <a class="board-row" href="/blog/project2.html">
+              <div class="col-flight flap" data-label="FLIGHT">DE-002</div>
+              <div class="col-dest" data-label="DESTINATION">
+                <span class="flap">DNS EXFILTRATION</span>
+                <div class="row-desc">Simulated normal and tunneled DNS traffic with Python + Scapy, then analyzed entropy and packet behavior in Wireshark.</div>
+              </div>
+              <div class="col-gate flap" data-label="GATE">WIRESHARK · PYTHON</div>
+              <div class="col-status flap" data-label="STATUS">SHIPPED</div>
+            </a>
+
+            <a class="board-row" href="/blog/project3.html">
+              <div class="col-flight flap" data-label="FLIGHT">DE-003</div>
+              <div class="col-dest" data-label="DESTINATION">
+                <span class="flap">THE SILENT SIEM</span>
+                <div class="row-desc">Post-mortem on why healthy Elastic detections stayed silent during a simulated intrusion chain — schema drift, stateless logic, and a stateful EQL fix.</div>
+              </div>
+              <div class="col-gate flap" data-label="GATE">ELASTIC</div>
+              <div class="col-status flap" data-label="STATUS">SHIPPED</div>
+            </a>
+
+            <a class="board-row" href="/blog/project4.html">
+              <div class="col-flight flap" data-label="FLIGHT">DE-004</div>
+              <div class="col-dest" data-label="DESTINATION">
+                <span class="flap">SENSOR TAMPERING</span>
+                <div class="row-desc">Python trust engine using EWMA and robust Z-scores to fuse multi-sensor telemetry and catch drift, spoofing, and dropout single-source alerts miss.</div>
+              </div>
+              <div class="col-gate flap" data-label="GATE">PYTHON</div>
+              <div class="col-status flap" data-label="STATUS">SHIPPED</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="board">
+          <div class="board-header">AVIATION SECURITY</div>
+          <div class="board-table">
+            <div class="board-row board-row-head">
+              <div>FLIGHT</div><div>DESTINATION</div><div>GATE</div><div>STATUS</div>
+            </div>
+
+            <div class="board-row no-link">
+              <div class="col-flight flap" data-label="FLIGHT">AV-001</div>
+              <div class="col-dest" data-label="DESTINATION">
+                <span class="flap">ACARS DATALINK</span>
+                <div class="row-desc">Exploring whether detection engineering applies to aviation datalink — ingesting and baselining lawfully-sourced, decoded ACARS/VDL2 message data.</div>
+              </div>
+              <div class="col-gate flap" data-label="GATE">PYTHON · PANDAS</div>
+              <div class="col-status flap" data-label="STATUS">SHIPPED</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="board">
+          <div class="board-header">INFRASTRUCTURE</div>
+          <div class="board-table">
+            <div class="board-row board-row-head">
+              <div>FLIGHT</div><div>DESTINATION</div><div>GATE</div><div>STATUS</div>
+            </div>
+
+            <a class="board-row" href="/blog/project5.html">
+              <div class="col-flight flap" data-label="FLIGHT">INF-001</div>
+              <div class="col-dest" data-label="DESTINATION">
+                <span class="flap">SOC LAB</span>
+                <div class="row-desc">19-service SOC lab (Elastic, Suricata, Zeek, MISP, and more) with a Python status aggregator and iOS Scriptable widget for homescreen visibility.</div>
+              </div>
+              <div class="col-gate flap" data-label="GATE">ELASTIC · SURICATA · ZEEK</div>
+              <div class="col-status flap" data-label="STATUS">SHIPPED</div>
+            </a>
+          </div>
+        </div>
+
       </div>
     </section>
     
@@ -125,5 +216,52 @@
       <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/show/4GLj6rTgWAupzNZOxCbEVZ?utm_source=generator&t=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </section>
   </div>
+
+  <script>
+    (function(){
+      var POOL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function randChar(){ return POOL[Math.floor(Math.random()*POOL.length)]; }
+
+      function wrapChars(el){
+        var text = el.textContent;
+        el.textContent = '';
+        var entries = [];
+        for (var i = 0; i < text.length; i++){
+          var ch = text[i];
+          var span = document.createElement('span');
+          span.className = 'flap-char';
+          span.textContent = ch;
+          el.appendChild(span);
+          entries.push({ span: span, final: ch, animate: /[A-Z0-9]/.test(ch) });
+        }
+        return entries;
+      }
+
+      function runFlap(el, delay){
+        var entries = wrapChars(el);
+        if (reduceMotion) return;
+        var steps = 7, stepMs = 45, step = 0;
+        setTimeout(function(){
+          var timer = setInterval(function(){
+            step++;
+            entries.forEach(function(entry){
+              if (!entry.animate) return;
+              entry.span.textContent = step < steps ? randChar() : entry.final;
+              entry.span.classList.remove('spin');
+              void entry.span.offsetWidth;
+              entry.span.classList.add('spin');
+            });
+            if (step >= steps) clearInterval(timer);
+          }, stepMs);
+        }, delay);
+      }
+
+      document.querySelectorAll('.board-table .board-row:not(.board-row-head)').forEach(function(row, i){
+        row.querySelectorAll('.flap').forEach(function(el){ runFlap(el, i * 100); });
+      });
+    })();
+  </script>
 </body>
 </html>
