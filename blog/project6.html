@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Project 6: ACARS Detection Engineering: When the Signal Is Not the Message</title>
+  <meta name="description" content="Testing whether ACARS timing can provide a useful anomaly signal.">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    :root{
+      --bg:#060a0e; --fg:#dde4ed; --muted:#4a6070;
+      --accent:#FDBE01; --card:#0d1520; --border:#162030;
+    }
+    html,body{
+      margin:0; padding:0; background:var(--bg); color:var(--fg);
+      font:15px/1.75 'JetBrains Mono','Courier New',monospace;
+      -webkit-font-smoothing:antialiased;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;
+      background-image:
+        linear-gradient(rgba(253,190,1,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(253,190,1,.03) 1px,transparent 1px);
+      background-size:48px 48px;
+      pointer-events:none;z-index:0
+    }
+    .container{ max-width:860px; margin:32px auto 80px; padding:0 24px; position:relative; z-index:1; }
+
+    a{ color:var(--accent); text-decoration:none; }
+    a:hover{ color:#a5f3fc; text-decoration:none; }
+
+    header{ padding:16px 0 20px; border-bottom:1px solid var(--border); margin-bottom:4px; }
+    .back{
+      font-size:11px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase;
+      font-family:'JetBrains Mono',monospace;
+    }
+    .back:hover{ color:var(--accent); }
+
+    h1{
+      font-family:'Inter','Helvetica Neue',sans-serif;
+      font-size:26px; font-weight:700;
+      color:var(--accent); line-height:1.3; letter-spacing:-.2px;
+      margin:32px 0 20px;
+    }
+    h2, h3{
+      font-family:'JetBrains Mono',monospace;
+      font-size:11px; font-weight:600;
+      color:var(--muted); text-transform:uppercase; letter-spacing:.13em;
+      margin:36px 0 14px; padding-left:12px;
+      border-left:2px solid var(--accent);
+    }
+    p{ margin:12px 0; }
+    li{ margin:5px 0; }
+    .highlight{ color:var(--accent); font-weight:600; }
+    code{
+      background:var(--card); border:1px solid var(--border);
+      padding:1px 6px; border-radius:3px;
+      font-family:'JetBrains Mono',monospace;
+      font-size:13px; color:var(--accent);
+    }
+    ul{ margin:8px 0 16px 20px; }
+    ul li::marker{ color:var(--accent); }
+    hr{
+      border:0; height:1px;
+      background:linear-gradient(90deg,rgba(253,190,1,.4) 0%,transparent 100%);
+      margin:40px 0;
+    }
+
+    .inline-img{
+      width:100%; height:auto;
+      margin:24px 0 8px; display:block;
+      border-radius:5px;
+      border:1px solid var(--border);
+      box-shadow:0 2px 12px rgba(0,0,0,.4);
+      cursor:zoom-in;
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .inline-img:hover{
+      transform:scale(1.02);
+      border-color:var(--accent);
+      box-shadow:0 8px 28px rgba(0,0,0,.6);
+    }
+    .caption{
+      font-size:11px; color:var(--muted);
+      text-align:center; margin:0 0 28px; display:block;
+      letter-spacing:.04em;
+    }
+
+    .lightbox{
+      position:fixed; inset:0; display:none; place-items:center;
+      background:rgba(0,0,0,.9); z-index:9999; padding:22px;
+    }
+    .lightbox.open{ display:grid }
+    .lightbox img{
+      max-width:min(1200px,92vw); max-height:86vh; border-radius:6px;
+      box-shadow:0 10px 60px rgba(0,0,0,.8);
+      border:1px solid rgba(253,190,1,.3);
+    }
+    .lightbox .close{
+      position:absolute; top:14px; right:18px; font-size:28px;
+      color:#fff; cursor:pointer; line-height:1;
+      font-family:'JetBrains Mono',monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a class="back" href="/" aria-label="Back to home">← mariacybersec</a>
+    </header>
+
+    <main class="post">
+      <h1>ACARS Detection Engineering: When the Signal Is Not the Message</h1>
+
+      <h3>Testing whether ACARS timing can provide a useful anomaly signal</h3>
+
+      <p>ACARS timing can look interesting before you even look at the message content, but:</p>
+
+      <p><strong>Can timing between ACARS records provide a useful anomaly signal on its own?</strong></p>
+
+      <p>I worked with publicly available decoded VDL2/ACARS data and built a timing-based baseline using robust statistics. The project started as a fairly straightforward anomaly-scoring exercise, but the more I tested it, the more the real problem shifted toward methodology: what should the baseline be, are the scores actually using that baseline, and what does one decoded record represent in the first place?</p>
+
+      <hr />
+
+      <h2>1: Starting with the Timing Signal</h2>
+
+      <p>The first version measured the elapsed time since the previous decoded record for the same aircraft.</p>
+
+      <p>The idea was to establish a normal timing pattern for an aircraft, then look for intervals that sit far away from it.</p>
+
+      <p>I used the median interval as the baseline and Median Absolute Deviation (MAD) as a measure of spread. Compared with mean and standard deviation, this makes the baseline less sensitive to a small number of very large gaps.</p>
+
+      <p>At first, the numbers looked interesting.</p>
+
+      <p>Then I looked more closely at how the baseline was being grouped.</p>
+
+      <hr />
+
+      <h2>2: Different Messages Have Different Cadences</h2>
+
+      <p>The first baseline was calculated at the aircraft level. That meant different ACARS labels were being combined into the same timing distribution.</p>
+
+      <p>That is a problem because different message types can have very different natural cadences. A long interval for one label may be completely normal while looking extreme against the cadence of another.</p>
+
+      <p>I changed the feature so that an interval was only compared with records from the same aircraft registration, flight, and ACARS label.</p>
+
+      <p>That gave each stream its own local timing baseline.</p>
+
+      <hr />
+
+      <h2>3: Rebuilding the Baseline</h2>
+
+      <p>With the grouping corrected, I recalculated the median interval and MAD for each stream.</p>
+
+      <p>The scoring formula itself did not need to change. The important part was making sure the population used to calculate the baseline matched the behavior being measured, which is an easy detail to overlook in detection work. The statistics can be perfectly valid while the grouping underneath them is wrong.</p>
+
+      <hr />
+
+      <h2>4: The Score Was Still Using the Old Baseline</h2>
+
+      <p>There was another problem after the methodology was corrected.</p>
+
+      <p>The downstream scoring code was still referencing the original registration-level baseline columns. The same-label baseline had been calculated, but the final deviation and MAD calculations were not consistently using it. In practice, the numerator had been updated while the denominator was still coming from the older baseline.</p>
+
+      <p>Then I reassigned the canonical baseline columns to the corrected group-level values and rebuilt the downstream scores.</p>
+
+      <p>The difference is visible in the results:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Stream</th>
+            <th>Max MAD score (before)</th>
+            <th>Max MAD score (after)</th>
+            <th>Extreme deviations (before → after)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>N261BZ / MX0263 / H1</td>
+            <td>32.77</td>
+            <td>32.77</td>
+            <td>1 → 1</td>
+          </tr>
+          <tr>
+            <td>N341NB / NW1638 / H1</td>
+            <td>21.25</td>
+            <td><strong>23.99</strong></td>
+            <td>3 → <strong>4</strong></td>
+          </tr>
+          <tr>
+            <td>N635FR / F92582 / H1</td>
+            <td>1.54</td>
+            <td>1.54</td>
+            <td>0 → 0</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <img src="../assets/project6/pic_1.png" class="inline-img" alt="N261BZ / MX0263 / H1">
+      <span class="caption">N261BZ / MX0263 / H1</span>
+
+      <img src="../assets/project6/pic_2.png" class="inline-img" alt="N341NB / NW1638 / H1">
+      <span class="caption">N341NB / NW1638 / H1</span>
+
+      <img src="../assets/project6/pic_3.png" class="inline-img" alt="N635FR / F92582 / H1">
+      <span class="caption">N635FR / F92582 / H1</span>
+
+      <p>N341NB is the important comparison here. It was the only stream in this sample containing multiple message types, so its naive and corrected baselines were different. The other streams had the same effective baseline under both approaches, which is why their scores did not move.</p>
+
+      <hr />
+
+      <h2>5: The Deeper Finding: What Exactly Is a "Message"?</h2>
+
+      <p>Once the scoring pipeline was internally consistent, I started looking at the protocol structure behind the records.</p>
+
+      <p>The dataset includes fields such as <code>msgNum</code> and <code>blockId</code>. Those expose structure below the level of a simple decoded record.</p>
+
+      <p>For these three streams, the difference is significant:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Stream</th>
+            <th>Raw records</th>
+            <th>Unique <code>msgNum</code></th>
+            <th>Span</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>N261BZ / MX0263</td>
+            <td>15</td>
+            <td>2</td>
+            <td>36.25 s</td>
+          </tr>
+          <tr>
+            <td>N341NB / NW1638</td>
+            <td>18</td>
+            <td>18</td>
+            <td>142.08 s</td>
+          </tr>
+          <tr>
+            <td>N635FR / F92582</td>
+            <td>14</td>
+            <td>4</td>
+            <td>36.42 s</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>As we can see, N341NB has 18 decoded records and 18 unique message numbers. N261BZ has 15 decoded records but only 2 unique message numbers. N635FR has 14 records but only 4 unique message numbers.</p>
+
+      <p>So a decoded record cannot automatically be treated as an independent logical ACARS message.</p>
+
+      <p>That changes how the timing feature should be interpreted. For example, the large N261BZ deviation occurs in a stream where many decoded records belong to only a small number of message numbers. Without reconstructing that underlying message structure, I cannot treat the deviation as a distinct logical-message timing event.</p>
+
+      <hr />
+
+      <h2>6: Why This Matters for Detection</h2>
+
+      <p>A timing score can be mathematically correct and still be measuring the wrong thing. This became the main methodological finding of the project.</p>
+
+      <p>And the current implementation measures timing between decoded records and does not yet reconstruct logical ACARS messages consistently, so the resulting scores should be treated as exploratory timing signals rather than evidence of malicious activity or anomalous aircraft behavior.</p>
+
+      <p>Before using timing as a behavioral detection feature, the next step is to reconstruct the logical messages using protocol-aware fields such as <code>msgNum</code> and <code>blockId</code>, then measure cadence at that level.</p>
+
+      <hr />
+
+      <h2>Conclusion</h2>
+
+      <p>The original question was whether timing alone could surface useful ACARS anomalies, and it can surface large deviations from a local baseline.</p>
+
+      <p>But during the investigation, the harder question turned out to be what exactly that timing represented.</p>
+
+      <p>The project exposed three separate issues: the original baseline mixed different message cadences, the first corrected scoring pass still referenced stale baseline columns, and the protocol structure showed that decoded records do not consistently correspond to independent logical messages.</p>
+
+      <p>The result is not a validated anomaly detector, but a timing-based exploratory feature that still needs protocol-aware message reconstruction before the signal can be interpreted as a behavioural one.</p>
+
+      <hr />
+
+      <h2>What I Learned</h2>
+
+      <ul>
+        <li>A robust baseline is only useful when the grouping reflects the behaviour being measured. Median/MAD does not fix a population that was defined incorrectly.</li>
+        <li>Updating a feature is not enough on its own. The downstream pipeline has to consume the corrected baseline too.</li>
+        <li>Statistical validity and semantic validity are different things. A score can be internally consistent while still measuring the wrong unit.</li>
+        <li>The most useful result was not a supposedly suspicious record. It was identifying why that result could not yet be trusted.</li>
+      </ul>
+
+      <p>Full notebook &amp; code: <a href="https://github.com/mxgmp/acars-detection-engineering">github.com/mxgmp/acars-detection-engineering</a></p>
+
+    </main>
+  </div>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <span class="close" id="lbClose" aria-label="Close">×</span>
+    <img id="lbImg" alt="">
+  </div>
+
+  <script>
+    (function(){
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      const lbClose = document.getElementById('lbClose');
+      document.querySelectorAll('.inline-img').forEach(img=>{
+        img.addEventListener('click',()=>{
+          lbImg.src = img.src;
+          lbImg.alt = img.alt || '';
+          lb.classList.add('open');
+          lb.setAttribute('aria-hidden','false');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+      function closeLB(){
+        lb.classList.remove('open');
+        lb.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+      }
+      lbClose.addEventListener('click', closeLB);
+      lb.addEventListener('click', e => { if (e.target === lb) closeLB(); });
+      window.addEventListener('keydown', e => { if (e.key === 'Escape') closeLB(); });
+    })();
+  </script>
+</body>
+</html>
